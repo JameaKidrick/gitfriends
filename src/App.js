@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 // COMPONENTS
 import Home from './components/Home';
 import Register from './components/Register';
+import Users  from './components/Users';
 
 function App() {
   const logOut = () => {
@@ -19,11 +20,14 @@ function App() {
         <br />
         <Link to='/register'>Register</Link>
         <br />
+        <Link to='/users'>Find Friends</Link>
+        <br />
         <Link to='/' onClick={() => {logOut()}}>Logout</Link>
 
         <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/register' component={Register} />
+          <Route path='/users' component={Users} />
         </Switch>
       </div>
     </Router>

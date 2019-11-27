@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
-import axios from 'axios';
 
 // ACTIONS
 import { registerUser }from '../actions';
 
 const Register = (props) => {
   const isFetching = useSelector(state => state.isFetching)
+  const error = useSelector(state => state.error)
 
   const [credentials, setCredentials] = useState({ username: '', password: '', first_name: '', last_name: '', date_of_birth: '', email: '' })
 
   const handleChange = e => {
+    e.persist();
     setCredentials({ ...credentials, [e.target.name]:e.target.value })
   }
 
   const handleSubmit = e => {
     e.preventDefault();
-    setCredentials({ username: '', password: '', first_name: '', last_name: '', date_of_birth: '', email: '' });
     props.registerUser(credentials, props.history)
   }
 
@@ -33,6 +33,10 @@ const Register = (props) => {
   return(
     <div>
       Hello RegisterPage!
+      <br />
+      {/* {error&& (
+        error
+      )} */}
       <form onSubmit={handleSubmit}>
         <input 
           type='text'
