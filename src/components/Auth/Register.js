@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 
 // ACTIONS
-import { registerUser }from '../actions';
+import { registerUser }from '../../actions';
 
 const Register = (props) => {
   const isFetching = useSelector(state => state.isFetching)
