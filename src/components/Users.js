@@ -3,8 +3,6 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // ACTIONS
-import { getAllUsers } from '../actions';
-import { getSingleUser } from '../actions';
 import { getAllProfilesWithUsers } from '../actions';
 
 const Users = (props) => {
@@ -51,5 +49,5 @@ const Users = (props) => {
 
 export default connect(
   null,
-  { getAllUsers, getSingleUser, getAllProfilesWithUsers }
+  { getAllProfilesWithUsers }
 )(Users);

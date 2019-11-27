@@ -1,4 +1,4 @@
-import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS } from '../actions';
+import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS } from '../actions';
 
 
 export const initialState = {
@@ -23,6 +23,8 @@ export const reducer = (state = initialState, action) => {
         error: action.payload
       };
     case REGISTER_SUCCESS:
+    case LOGIN_SUCCESS:
+    case LOGOUT_SUCCESS:
       return{
         ...state,
         isFetching: false,
