@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { connect, useSelector } from 'react-redux';
 
-function App() {
+// COMPONENTS
+import Home from './components/Home';
+import Register from './components/Auth/Register';
+import Login from './components/Auth/Login';
+import ErrorPage from './components/ErrorPage';
+import PrivateRoute from './components/PrivateRoute';
+import Users  from './components/Users';
+
+// ACTIONS
+import { logoutUser } from './actions';
+
+function App(props) {
+  const loggedIn = useSelector(state => state.loggedIn)
+
+  const logOut = () => {
+    props.logoutUser()
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <div className='App'>
+        <Link to='/'>Home</Link>
+        <br />
+        <Link to='/users'>Find Friends</Link>
+        {!loggedIn && (
+          <>
+            <br />
+            <Link to='/register'>Register</Link>
+            <br />
+            <Link to='/login'>Login</Link>
+          </>
+        )}
+        <br />
+        {loggedIn && (
+          <Link to='/' onClick={() => {logOut()}}>Logout</Link>
+        )}
+
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route path='/register' component={Register} />
+          <Route path='/login' component={Login} />
+
+          {/**************************** PRIVATE ROUTES ****************************/}
+          <PrivateRoute path='/users' component={Users} />
+          <Route component={ErrorPage} />
+        </Switch>
+      </div>
+    </Router>
+  )
 }
 
-export default App;
+export default connect(
+  null,
+  { logoutUser }
+)(App);
