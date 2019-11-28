@@ -158,9 +158,9 @@ export const getUserProfile = (id, setProfile, setUser) => dispatch => {
   axiosWithAuth()
     .get(`/profiles/${id}/full`)
     .then(response => {
+      dispatch({ type: GETUSERPROFILE_SUCCESS, payload: response.data })
       console.log(response.data.profile)
       setProfile(response.data.profile)
       setUser(response.data.user)
-      dispatch({ type: GETUSERPROFILE_SUCCESS, payload: response.data })
     })
 }

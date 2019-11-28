@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { matchPath } from 'react-router';
@@ -8,8 +8,8 @@ import Home from './components/Home';
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import ErrorPage from './components/ErrorPage';
-import PrivateRoute from './components/PrivateRoute';
-import UserRoute from './components/UserRoute';
+import PrivateRoute from './components/Routes/PrivateRoute';
+import UserRoute from './components/Routes/UserRoute';
 import Users  from './components/Users';
 import CreateProfile from './components/CreateProfile/Page1_Create';
 import FaveLanguage from './components/CreateProfile/Page2_FaveLang';
@@ -20,9 +20,13 @@ import UserProfile from './components/UserProfile/UserProfile';
 import { logoutUser } from './actions';
 
 function App(props) {
-  const userid = Number(localStorage.getItem('userid'));
+  const [userid, setUserid] = useState(0)
   const loggedIn = useSelector(state => state.loggedIn)
   // console.log(userid, typeof(userid))
+  
+  useEffect(() => {
+    setUserid(Number(localStorage.getItem('userid')));
+  }, [])
 
   const logOut = () => {
     props.logoutUser()
@@ -64,8 +68,9 @@ function App(props) {
           <PrivateRoute path='/users' component={Users} />
           <PrivateRoute exact path='/register/:id/createprofile' component={CreateProfile} />
           <PrivateRoute path='/register/:id/createprofile2' component={FaveLanguage} />
-          <PrivateRoute path='/profile/:id' component={UserProfile} />
-          <UserRoute {
+          <UserRoute path='/profile/:id' component={UserProfile} />
+          <PrivateRoute path={`/myprofile/:id`}
+          {
             ...matchPath(`/myprofile/${userid}`, {
               path: `/myprofile/:id`,
               exact: true,

@@ -7,14 +7,14 @@ const UserRoute = ({ component:Component, ...rest }) => {
     {...rest}
     render={props => {
       {console.log(props)}
-        if(localStorage.getItem('userid') === props.match.params.id) {
+        if(Number(localStorage.getItem('userid')) === Number(props.match.params.id)) {
+          return <Redirect to={`/myprofile/${Number(localStorage.getItem('userid'))}`} />;
+          } else {
           return <Component {...props} />
-        } else {
-          return <Redirect to='/profile/:id' />;
         }
       }}
     />
   );
-};
+}
 
 export default UserRoute;

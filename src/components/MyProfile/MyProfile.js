@@ -20,13 +20,12 @@ const MyProfile = (props) => {
   const classes = useStyles();
 
   const userid = Number(localStorage.getItem('userid'))
-  // console.log(userid, typeof(userid))
 
   const [profile, setProfile] = useState([])
   const [user, setUser] = useState([])
 
   useEffect(() => {
-  props.getUserProfile(userid, setProfile, setUser);
+    props.getUserProfile(userid, setProfile, setUser);
     props.check();
   }, [])
 
