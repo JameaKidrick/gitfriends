@@ -1,9 +1,10 @@
-import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS, PROFILECREATED_SUCCESS } from '../actions';
+import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS, PROFILECREATED_SUCCESS, FETCHLANGUAGES_SUCCESS, ADDLANGUAGES_SUCCESS } from '../actions';
 
 
 export const initialState = {
   users: [],
   profiles: [],
+  languages: [],
   loggedIn: false,
   isFetching: false,
   error: ''
@@ -27,6 +28,7 @@ export const reducer = (state = initialState, action) => {
     case LOGIN_SUCCESS:
     case CHECK_SUCCESS:
     case PROFILECREATED_SUCCESS:
+    case ADDLANGUAGES_SUCCESS:
       return{
         ...state,
         isFetching: false,
@@ -55,6 +57,13 @@ export const reducer = (state = initialState, action) => {
         isFetching: false,
         error: '',
         loggedIn: true
+      };
+    case FETCHLANGUAGES_SUCCESS:
+      return {
+        ...state,
+        languages: action.payload,
+        isFetching: false,
+        error: ''
       };
     default:
       return state

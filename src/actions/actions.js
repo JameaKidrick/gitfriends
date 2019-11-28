@@ -11,6 +11,9 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const FETCHUSERS_SUCCESS = 'FETCHUSERS_SUCCESS';
 export const MAPPROFILES_SUCCESS = 'MAPPROFILES_SUCCESS';
 export const PROFILECREATED_SUCCESS = 'PROFILECREATED_SUCCESS';
+export const FETCHLANGUAGES_SUCCESS = 'FETCHLANGUAGES_SUCCESS';
+export const ADDLANGUAGES_SUCCESS = 'ADDLANGUAGES_SUCCESS';
+
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -103,16 +106,47 @@ export const logoutUser = () => dispatch => {
     localStorage.removeItem('username')
 }
 
-export const createProfile = (id, profile) => dispatch => {
+export const createProfile = (id, profile, history) => dispatch => {
   dispatch({ type: START_FETCHING })
   console.log('ACTION', profile, 'ID', id)
   axiosWithAuth()
     .post(`/users/${id}/profile`, profile)
     .then(response => {
       dispatch({ type: PROFILECREATED_SUCCESS })
+      localStorage.setItem('profileid', response.data.profile_id)
+      history.push(`/register/${id}/createprofile2`)
     })
     .catch(error => {
       console.log(error.response)
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
     })
+}
+
+export const getLanguages = () => dispatch => {
+  dispatch({ type: START_FETCHING })
+  axiosWithAuth()
+    .get('/fave')
+    .then(response => {
+      dispatch({ type: FETCHLANGUAGES_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      console.log(error.response.data.error)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+    })
+}
+
+export const addFaveLanguages = (id, fave, history) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  fave.forEach(element => {
+    axiosWithAuth()
+      .post(`/profiles/${id}/fave`, element)
+      .then(response => {
+        dispatch({ type: ADDLANGUAGES_SUCCESS, payload: response.data })
+        history.push(`/myprofile/${id}`)
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
+        dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+      })
+  })
 }

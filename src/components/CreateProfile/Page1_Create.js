@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { avatarList } from './AvatarList';
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
@@ -52,7 +53,6 @@ const CreateProfile = (props) => {
 
   useEffect(() => {
     setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`})
-    console.log(DOBFormat, choice, profile)
   }, [choice, DOBFormat])
 
   // FORMAT DOB
@@ -92,8 +92,8 @@ const CreateProfile = (props) => {
   const handleSubmit = e => {
     e.preventDefault();
     // setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`})
-    console.log('SUBMIT', profile)
-    props.createProfile(user, profile)
+    // console.log('SUBMITTED')
+    props.createProfile(user, profile, props.history)
   }
 
   return(
