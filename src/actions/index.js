@@ -1,1 +1,1 @@
-export { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS, getAllUsers, getSingleUser, getAllProfilesWithUsers, registerUser, loginUser, logoutUser } from './actions';
+export { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS, PROFILECREATED_SUCCESS, getAllUsers, getSingleUser, getAllProfilesWithUsers, registerUser, loginUser, check, logoutUser, createProfile } from './actions';

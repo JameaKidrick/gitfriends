@@ -9,6 +9,8 @@ import Login from './components/Auth/Login';
 import ErrorPage from './components/ErrorPage';
 import PrivateRoute from './components/PrivateRoute';
 import Users  from './components/Users';
+import CreateProfile from './components/CreateProfile/Page1_Create';
+import FaveLanguage from './components/CreateProfile/Page2_FaveLang';
 
 // ACTIONS
 import { logoutUser } from './actions';
@@ -38,14 +40,19 @@ function App(props) {
         {loggedIn && (
           <Link to='/' onClick={() => {logOut()}}>Logout</Link>
         )}
+        <Link to='/createprofile/2'>Create Profile</Link>
 
         <Switch>
           <Route exact path='/' component={Home} />
-          <Route path='/register' component={Register} />
+          <Route exact path='/register' component={Register} />
           <Route path='/login' component={Login} />
+          <Route path='/createprofile/2' component={FaveLanguage} />
+
+          {/* TEMPORARY - CHANGE TO PRIVATE ROUTE */}
 
           {/**************************** PRIVATE ROUTES ****************************/}
           <PrivateRoute path='/users' component={Users} />
+          <PrivateRoute path='/register/:id/createprofile' component={CreateProfile} />
           <Route component={ErrorPage} />
         </Switch>
       </div>

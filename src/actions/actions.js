@@ -5,9 +5,12 @@ export const START_FETCHING = 'START_FETCHING';
 export const FETCH_FAILURE = 'FETCH_FAILURE';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const CHECK_SUCCESS = 'CHECK_SUCCESS';
+export const CHECK_FAILURE = 'CHECK_FAILURE';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const FETCHUSERS_SUCCESS = 'FETCHUSERS_SUCCESS';
 export const MAPPROFILES_SUCCESS = 'MAPPROFILES_SUCCESS';
+export const PROFILECREATED_SUCCESS = 'PROFILECREATED_SUCCESS';
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -60,7 +63,7 @@ export const registerUser = (credentials, history) => dispatch => {
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('userid', response.data.id)
       localStorage.setItem('username', response.data.username)
-      history.push('/')
+      history.push(`/register/${response.data.id}/createprofile`)
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
@@ -84,10 +87,32 @@ export const loginUser = (credentials, history) => dispatch => {
     })
 }
 
+export const check = () => dispatch => {
+  if(localStorage.getItem('token')){
+    dispatch({ type: CHECK_SUCCESS })
+  }else{
+    dispatch({ type: CHECK_FAILURE })
+  }
+}
+
 export const logoutUser = () => dispatch => {
   dispatch({ type: START_FETCHING })
   dispatch({ type: LOGOUT_SUCCESS})
     localStorage.removeItem('token')
     localStorage.removeItem('userid')
     localStorage.removeItem('username')
+}
+
+export const createProfile = (id, profile) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  console.log('ACTION', profile, 'ID', id)
+  axiosWithAuth()
+    .post(`/users/${id}/profile`, profile)
+    .then(response => {
+      dispatch({ type: PROFILECREATED_SUCCESS })
+    })
+    .catch(error => {
+      console.log(error.response)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+    })
 }
