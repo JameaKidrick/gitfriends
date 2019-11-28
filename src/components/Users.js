@@ -40,12 +40,13 @@ const Users = (props) => {
 
   return(
     <div style={{border:'1px solid black', display:'flex', flexWrap:'wrap'}}>
-      {sortedProfiles.map((item, index)=> {
+      {profiles.map((item, index)=> {
         return(
           <div key={index} style={{border:'1px solid red', margin:'2%'}}>
-            <Link to='/'>
+            <Link to={`/profile/${item.user.user_id}`}>
+              
               <div style={{border:'1px solid black', width:'200px'}}>
-                  <h4>
+                  <h4 onClick={()=>{console.log(item.user.user_id)}}>
                     {item.user.username}
                   </h4>
                   <img src={item.profile.avatar} style={{width:'100px'}} />

@@ -15,20 +15,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MyProfile = (props) => {
+const UserProfile = (props) => {
   // STYLES
   const classes = useStyles();
-
-  const userid = Number(localStorage.getItem('userid'))
-  // console.log(userid, typeof(userid))
 
   const [profile, setProfile] = useState([])
   const [user, setUser] = useState([])
 
   useEffect(() => {
-  props.getUserProfile(userid, setProfile, setUser);
+    props.getUserProfile(props.match.params.id, setProfile, setUser);
     props.check();
-  }, [])
+    }, [])
 
   return(
     <div>
@@ -49,4 +46,4 @@ const MyProfile = (props) => {
 export default connect(
   null,
   { getUserProfile, check }
-)(MyProfile);
+)(UserProfile);

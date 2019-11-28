@@ -13,6 +13,7 @@ export const MAPPROFILES_SUCCESS = 'MAPPROFILES_SUCCESS';
 export const PROFILECREATED_SUCCESS = 'PROFILECREATED_SUCCESS';
 export const FETCHLANGUAGES_SUCCESS = 'FETCHLANGUAGES_SUCCESS';
 export const ADDLANGUAGES_SUCCESS = 'ADDLANGUAGES_SUCCESS';
+export const GETUSERPROFILE_SUCCESS = 'GETUSERPROFILE_SUCCESS';
 
 
 // ACTION CREATORS
@@ -104,6 +105,7 @@ export const logoutUser = () => dispatch => {
     localStorage.removeItem('token')
     localStorage.removeItem('userid')
     localStorage.removeItem('username')
+    localStorage.removeItem('profileid')
 }
 
 export const createProfile = (id, profile, history) => dispatch => {
@@ -149,4 +151,16 @@ export const addFaveLanguages = (id, fave, history) => dispatch => {
         dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
       })
   })
+}
+
+export const getUserProfile = (id, setProfile, setUser) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  axiosWithAuth()
+    .get(`/profiles/${id}/full`)
+    .then(response => {
+      console.log(response.data.profile)
+      setProfile(response.data.profile)
+      setUser(response.data.user)
+      dispatch({ type: GETUSERPROFILE_SUCCESS, payload: response.data })
+    })
 }
