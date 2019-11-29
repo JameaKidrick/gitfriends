@@ -24,19 +24,19 @@ export const reducer = (state = initialState, action) => {
           isFetching: false,
           error: action.payload
         };
-        case REGISTER_SUCCESS:
-          case LOGIN_SUCCESS:
-            case CHECK_SUCCESS:
-              case PROFILECREATED_SUCCESS:
-                case ADDLANGUAGES_SUCCESS:
-                  return{
-                    ...state,
-                    isFetching: false,
-                    error: '',
-                    loggedIn: true
-                  };
-                  case CHECK_FAILURE:
-                    case LOGOUT_SUCCESS:
+      case REGISTER_SUCCESS:
+      case LOGIN_SUCCESS:
+      case CHECK_SUCCESS:
+      case PROFILECREATED_SUCCESS:
+      case ADDLANGUAGES_SUCCESS:
+          return{
+            ...state,
+            isFetching: false,
+            error: '',
+            loggedIn: true
+          };
+      case CHECK_FAILURE:
+      case LOGOUT_SUCCESS:
       return{
         ...state,
         isFetching: false,

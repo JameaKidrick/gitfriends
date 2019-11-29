@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { avatarList } from './AvatarList';
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
+import * as yup from 'yup';
 
 // ACTIONS  
 import { createProfile, check } from '../../actions';
@@ -17,6 +18,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { grey } from '@material-ui/core/colors';
+import { TextField } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -44,16 +46,23 @@ const CreateProfile = (props) => {
   const user = localStorage.getItem('userid')
   const [choice, setChoice] = useState('')
   const [DOB, setDOB] = useState(new Date());
-  const [DOBFormat, setDOBFormat] = useState('')
-  const [profile, setProfile] = useState({avatar:'', dob_display:''})
+  const [DOBFormat, setDOBFormat] = useState('');
+  const [location, setLocation] = useState('');
+  const [aboutMe, setAboutMe] = useState('');
+  const [profile, setProfile] = useState({avatar:'', dob_display:''});
 
   useEffect(() => {
     props.check()
   }, [])
 
   useEffect(() => {
-    setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`})
-  }, [choice, DOBFormat])
+    setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`, location:`${location}`, about_me:`${aboutMe}`})
+  }, [choice, DOBFormat, location, aboutMe])
+
+  // // YUP VALIDATION
+  // let schema = yup.object().shape({
+
+  // })
 
   // FORMAT DOB
   const monthNames = [
@@ -67,7 +76,7 @@ const CreateProfile = (props) => {
     const day = date.getDate();
     const monthIndex = date.getMonth();
     const year = date.getFullYear();
-    return `${monthNames[monthIndex]} ${day}, ${year}`
+    return `${monthNames[monthIndex]} ${day} ${year}`
   }
 
   function formatPartialDate(date) {
@@ -81,6 +90,7 @@ const CreateProfile = (props) => {
     return `${monthNames[monthIndex]}`
   }
 
+  // HANDLE DOB
   const handleDOBChange = date => {
     setDOB(date)
   }
@@ -88,12 +98,21 @@ const CreateProfile = (props) => {
   const handleDOBDisplay = e => {
     setDOBFormat(e.target.value)
   }
+
+  // HANDLE LOCATION
+  const handleLocationChange = e => {
+    setLocation(e.target.value)
+  }
+
+  // HANDLE ABOUT ME
+  const handleAboutMeChange = e => {
+    setAboutMe(e.target.value)
+  }
   
+  // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    // setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`})
-    // console.log('SUBMITTED')
-    props.createProfile(user, profile, props.history)
+    props.createProfile(user, profile, props.history);
   }
 
   return(
@@ -117,10 +136,15 @@ const CreateProfile = (props) => {
       
       <form onSubmit={handleSubmit}>
         {/********************************************** CHOOSE DOB **********************************************/}
-        <input 
+        <TextField
           type='text'
           name='dob'
+          variant='outlined'
+          label="Read Only"
           value={DOB === '' ? '':formatFullDate(DOB)}
+          InputProps={{
+            readOnly: true,
+          }}
         />
 
         <Calendar onChange={date => handleDOBChange(date)} calendarType='US' />
@@ -155,8 +179,18 @@ const CreateProfile = (props) => {
           />
         </RadioGroup>
         {/********************************************** ADD LOCATION **********************************************/}
-  
+        <TextField
+          label='location'
+          variant='outlined'
+          onChange={handleLocationChange}
+        />
         {/********************************************** ADD ABOUT ME **********************************************/}
+        <TextField
+          label='about me'
+          variant='outlined'
+          multiline
+          onChange={handleAboutMeChange}
+        />
         <button type='submit'>Submit</button>
       </form>
     </div>

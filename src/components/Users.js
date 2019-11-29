@@ -18,9 +18,7 @@ import { getAllProfilesWithUsers, check } from '../actions';
 
 const Users = (props) => {
   const isFetching = useSelector(state => state.isFetching)
-  const loggedIn = useSelector(state => state.loggedIn)
   const profiles = useSelector(state => state.profiles)
-  const [allUsers, setAllUsers] = useState([])
 
   useEffect(() => {
     props.getAllProfilesWithUsers()
@@ -30,8 +28,6 @@ const Users = (props) => {
   const sortedProfiles = profiles.sort((a, b) => {
     return a.user_id - b.user_id
   })
-
-  console.log('PROFILES', profiles)
 
   if(isFetching){
     return(
@@ -51,7 +47,7 @@ const Users = (props) => {
             <Link to={`/profile/${item.user_id}`}>
               
               <div style={{border:'1px solid black', width:'200px'}}>
-                  <h4 onClick={()=>{console.log(item.user_id)}}>
+                  <h4>
                     {item.username}
                   </h4>
                   <img src={item.avatar} style={{width:'100px'}} />
