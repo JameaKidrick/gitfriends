@@ -9,7 +9,7 @@ export const CHECK_SUCCESS = 'CHECK_SUCCESS';
 export const CHECK_FAILURE = 'CHECK_FAILURE';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const FETCHUSERS_SUCCESS = 'FETCHUSERS_SUCCESS';
-export const MAPPROFILES_SUCCESS = 'MAPPROFILES_SUCCESS';
+export const FETCHPROFILES_SUCCESS = 'FETCHPROFILES_SUCCESS';
 export const PROFILECREATED_SUCCESS = 'PROFILECREATED_SUCCESS';
 export const FETCHLANGUAGES_SUCCESS = 'FETCHLANGUAGES_SUCCESS';
 export const ADDLANGUAGES_SUCCESS = 'ADDLANGUAGES_SUCCESS';
@@ -43,18 +43,21 @@ export const getSingleUser = () => dispatch => {
 export const getAllProfilesWithUsers = () => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
-    .get('/users')
+    .get('/profiles/all')
     .then(response => {
-      return response.data.map(item => {
-        axiosWithAuth()
-        .get(`/profiles/${item.user_id}/full`)
-        .then(responseProfile => {
-          dispatch({ type: MAPPROFILES_SUCCESS, payload: responseProfile.data})
-        })
-      })
+      // return response.data.map(item => {
+      //   axiosWithAuth()
+      //   .get(`/profiles/${item.user_id}/full`)
+      //   .then(responseProfile => {
+      //     dispatch({ type: MAPPROFILES_SUCCESS, payload: responseProfile.data})
+      //   })
+      // })
+      console.log(response.data)
+      dispatch({ type: FETCHPROFILES_SUCCESS, payload: response.data})
     })
     .catch(error => {
-      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+      console.log(error.response)
+      // dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
     })
 }
 

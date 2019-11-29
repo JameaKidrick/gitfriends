@@ -1,5 +1,4 @@
-import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, MAPPROFILES_SUCCESS, PROFILECREATED_SUCCESS, FETCHLANGUAGES_SUCCESS, ADDLANGUAGES_SUCCESS, GETUSERPROFILE_SUCCESS } from '../actions';
-
+import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, FETCHPROFILES_SUCCESS, PROFILECREATED_SUCCESS, FETCHLANGUAGES_SUCCESS, ADDLANGUAGES_SUCCESS, GETUSERPROFILE_SUCCESS } from '../actions';
 
 export const initialState = {
   users: [],
@@ -19,42 +18,43 @@ export const reducer = (state = initialState, action) => {
         isFetching: true,
         error: ''
       };
-    case FETCH_FAILURE:
-      return{
-        ...state,
-        isFetching: false,
-        error: action.payload
-      };
-    case REGISTER_SUCCESS:
-    case LOGIN_SUCCESS:
-    case CHECK_SUCCESS:
-    case PROFILECREATED_SUCCESS:
-    case ADDLANGUAGES_SUCCESS:
-      return{
-        ...state,
-        isFetching: false,
-        error: '',
-        loggedIn: true
-      };
-    case CHECK_FAILURE:
-    case LOGOUT_SUCCESS:
+      case FETCH_FAILURE:
+        return{
+          ...state,
+          isFetching: false,
+          error: action.payload
+        };
+        case REGISTER_SUCCESS:
+          case LOGIN_SUCCESS:
+            case CHECK_SUCCESS:
+              case PROFILECREATED_SUCCESS:
+                case ADDLANGUAGES_SUCCESS:
+                  return{
+                    ...state,
+                    isFetching: false,
+                    error: '',
+                    loggedIn: true
+                  };
+                  case CHECK_FAILURE:
+                    case LOGOUT_SUCCESS:
       return{
         ...state,
         isFetching: false,
         error: '',
         loggedIn: false
       };
-    case FETCHUSERS_SUCCESS:
-      return{
+      case FETCHUSERS_SUCCESS:
+        return{
+          ...state,
+          users: action.payload,
+          isFetching: false,
+          error: ''
+        };
+        case FETCHPROFILES_SUCCESS:
+          
+          return {
         ...state,
-        users: action.payload,
-        isFetching: false,
-        error: ''
-      };
-    case MAPPROFILES_SUCCESS:
-      return {
-        ...state.profiles,
-        profiles: [...state.profiles, action.payload],
+        profiles: action.payload,
         isFetching: false,
         error: '',
         loggedIn: true

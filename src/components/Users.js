@@ -14,19 +14,24 @@ import H from '../images/7.jpg';
 import I from '../images/8.jpg';
 
 // ACTIONS
-import { getAllProfilesWithUsers } from '../actions';
+import { getAllProfilesWithUsers, check } from '../actions';
 
 const Users = (props) => {
   const isFetching = useSelector(state => state.isFetching)
+  const loggedIn = useSelector(state => state.loggedIn)
   const profiles = useSelector(state => state.profiles)
-
-  const sortedProfiles = profiles.sort((a, b) => {
-    return a.user.user_id - b.user.user_id
-  })
+  const [allUsers, setAllUsers] = useState([])
 
   useEffect(() => {
     props.getAllProfilesWithUsers()
+    props.check();
   }, [])
+  
+  const sortedProfiles = profiles.sort((a, b) => {
+    return a.user_id - b.user_id
+  })
+
+  console.log('PROFILES', profiles)
 
   if(isFetching){
     return(
@@ -40,16 +45,16 @@ const Users = (props) => {
 
   return(
     <div style={{border:'1px solid black', display:'flex', flexWrap:'wrap'}}>
-      {profiles.map((item, index)=> {
+      {sortedProfiles.map((item, index)=> {
         return(
           <div key={index} style={{border:'1px solid red', margin:'2%'}}>
-            <Link to={`/profile/${item.user.user_id}`}>
+            <Link to={`/profile/${item.user_id}`}>
               
               <div style={{border:'1px solid black', width:'200px'}}>
-                  <h4 onClick={()=>{console.log(item.user.user_id)}}>
-                    {item.user.username}
+                  <h4 onClick={()=>{console.log(item.user_id)}}>
+                    {item.username}
                   </h4>
-                  <img src={item.profile.avatar} style={{width:'100px'}} />
+                  <img src={item.avatar} style={{width:'100px'}} />
               </div>
             </Link>
           </div>
@@ -61,5 +66,5 @@ const Users = (props) => {
 
 export default connect(
   null,
-  { getAllProfilesWithUsers }
+  { getAllProfilesWithUsers, check }
 )(Users);
