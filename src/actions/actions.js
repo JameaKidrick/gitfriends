@@ -56,7 +56,7 @@ export const registerUser = (data, history) => dispatch => {
       history.push(`/register/${response.data.id}/createprofile`)
     })
     .catch(error => {
-      console.log('ERROR', error.response.data)
+      console.log('ERROR', error.response.data.error)
       dispatch({ type: FETCH_FAILURE, payload: error.response.data })
     })
 }

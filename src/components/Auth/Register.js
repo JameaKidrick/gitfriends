@@ -9,52 +9,47 @@ import { registerUser }from '../../actions';
 // STYLE
 import { TextField } from '@material-ui/core';
 import FormHelperText from '@material-ui/core/FormHelperText'
+import Button from '@material-ui/core/Button';
 
 
 const Register = (props) => {
-  const { register, handleSubmit, errors } = useForm();
+  let { register, handleSubmit, errors, clearError, setError } = useForm();
   const isFetching = useSelector(state => state.isFetching);
-  const [usernameError, setUsernameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [username, setUsername] = useState({ username:'' });
-  const [email, setEmail] = useState({ email:'' });
+  const error = useSelector(state => state.error);
 
   const handleUsernameChange = e => {
-  //   console.log(username)
-  //   setUsername({ [e.target.name]:e.target.value })
-  //   axiosWithAuth()
-  //     .post('/auth/register/checkUsername', username)
-  //     .then(response => {
-  //       setUsername(response.data)
-  //       console.log(response)
-  //     })
-  //     .catch(error => {
-  //       console.log(error.response)
-  //       setUsernameError(true)
-  //     })
-  //     setUsernameError(false)
+    return clearError("username")
   }
 
   const handleEmailChange = e => {
-  //   console.log(email)
-  //   setEmail({ [e.target.name]:e.target.value })
-  //   axiosWithAuth()
-  //     .post('/auth/register/checkEmail', email)
-  //     .then(response => {
-  //       setEmail(response.data)
-  //       console.log(response)
-  //     })
-  //     .catch(error => {
-  //       console.log(error.response)
-  //       setEmailError(true)
-  //     })
-  //     setEmailError(false)
+    return clearError("email")
   }
-  
-  const handleFormSubmit = data => {
+
+  // const validateForm= e => {
+  //   if(error.error){
+  //     setError('username', 'please try again')
+  //   }else{
+  //     return true
+  //   }
+  // }
+
+  const handleFormSubmit = (data, e)=> {
+    // e.preventDefault()
+    // validateForm()
     props.registerUser(data, props.history)
     console.log('DATA', data)
   }
+
+  // TESTS
+    // 1. ADD FUNCTION TO TRIGGER 'ERRORS' USING DOCUMENTATION
+
+    // if(error.error === 'Username is already in the database') return true;
+      // return false;
+      // THIS VERSION DOES NOT WORK; IT'S RETURNING TRUE AUTOMATICALLY WHEN IT SHOULD CHOOSE BASED ON IF STATUS
+
+      // MAIN ISSUE: FUNCTIONS OR 'VALIDATE' ARE NOT DISTINGUISHING BETWEEN TRUE AND FALSE EITHER CAUSING THE RETURNED VALUE TO ALWAYS BE FALSE -> CAUSES ERROR TO POP UP??? (SHOULD ONLY TRIGGER DURING TRUE) ...OR PREVENTING AXIOS CALL 
+
+  
 
   if(isFetching){
     return(
@@ -81,7 +76,7 @@ const Register = (props) => {
         {errors.username && errors.username.type === "required" && (
           <FormHelperText error>username is required</FormHelperText>
           )}
-        {usernameError && (
+        {error.error && error.error === 'Username is already in the database' && (
           <FormHelperText error>this username is already being used</FormHelperText>
         )}
 
@@ -141,10 +136,10 @@ const Register = (props) => {
           {errors.email && errors.email.type === "required" && (
             <FormHelperText error>email is required</FormHelperText>
           )}
-          {emailError && (
-          <FormHelperText error>this email is already being used</FormHelperText>
-        )}
-        <button type='submit'>Submit</button>
+          {error.error && error.error === 'Email is already in the database' && (
+            <FormHelperText error>this email is already being used</FormHelperText>
+          )}
+        <Button type='submit'>Submit</Button>
       </form>
     </div>
   )
