@@ -15,6 +15,7 @@ import CreateProfile from './components/CreateProfile/Page1_Create';
 import FaveLanguage from './components/CreateProfile/Page2_FaveLang';
 import MyProfile from './components/MyProfile/MyProfile';
 import UserProfile from './components/UserProfile/UserProfile';
+import EditProfile from './components/MyProfile/EditProfile';
 
 // ACTIONS
 import { logoutUser } from './actions';
@@ -22,7 +23,7 @@ import { logoutUser } from './actions';
 function App(props) {
   const [userid, setUserid] = useState(0)
   const loggedIn = useSelector(state => state.loggedIn)
-  // console.log(userid, typeof(userid))
+  console.log(userid, typeof(userid))
   
   useEffect(() => {
     setUserid(Number(localStorage.getItem('userid')));
@@ -69,7 +70,7 @@ function App(props) {
           <PrivateRoute exact path='/register/:id/createprofile' component={CreateProfile} />
           <PrivateRoute path='/register/:id/createprofile2' component={FaveLanguage} />
           <UserRoute path='/profile/:id' component={UserProfile} />
-          <PrivateRoute path={`/myprofile/:id`}
+          <PrivateRoute exact path={`/myprofile/:id`}
           {
             ...matchPath(`/myprofile/${userid}`, {
               path: `/myprofile/:id`,
@@ -77,6 +78,15 @@ function App(props) {
               strict: false
             })} 
             component={MyProfile} 
+          />
+          <PrivateRoute path={`/myprofile/:id/editprofile`}
+          {
+            ...matchPath(`/myprofile/${userid}/editprofile`, {
+              path: `/myprofile/:id/editprofile`,
+              exact: true,
+              strict: false
+            })}
+            component={EditProfile}
           />
           <Route component={ErrorPage} />
         </Switch>

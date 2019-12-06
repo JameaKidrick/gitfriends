@@ -51,7 +51,7 @@ export const registerUser = (data, history) => dispatch => {
       dispatch({ type: REGISTER_SUCCESS})
       console.log('RESPONSE', response)
       localStorage.setItem('token', response.data.token)
-      localStorage.setItem('userid', response.data.id)
+      localStorage.setItem('userid', response.data.userid)
       localStorage.setItem('username', response.data.username)
       history.push(`/register/${response.data.id}/createprofile`)
     })
@@ -68,8 +68,9 @@ export const loginUser = (credentials, history) => dispatch => {
     .then(response => {
       dispatch({ type: LOGIN_SUCCESS})
       localStorage.setItem('token', response.data.token)
-      localStorage.setItem('userid', response.data.id)
+      localStorage.setItem('userid', response.data.userid)
       localStorage.setItem('username', response.data.username)
+      localStorage.setItem('profileid', response.data.profileid)
       history.push('/')
     })
     .catch(error => {
@@ -147,5 +148,18 @@ export const getUserProfile = (id, setProfile, setUser) => dispatch => {
       dispatch({ type: GETUSERPROFILE_SUCCESS, payload: response.data })
       setProfile(response.data.profile)
       setUser(response.data.user)
+    })
+    .catch(error => {
+      console.log(error.response.data.error)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+    })
+}
+
+export const editProfile = (profileId, info) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  axiosWithAuth()
+    .put(`/profiles/${profileId}`, info)
+    .then(response => {
+      console.log(response)
     })
 }

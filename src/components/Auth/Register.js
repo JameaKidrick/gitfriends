@@ -35,21 +35,16 @@ const Register = (props) => {
 
   const handleFormSubmit = (data, e)=> {
     // e.preventDefault()
+    // e.persist()
     // validateForm()
     props.registerUser(data, props.history)
     console.log('DATA', data)
   }
 
-  // TESTS
-    // 1. ADD FUNCTION TO TRIGGER 'ERRORS' USING DOCUMENTATION
-
-    // if(error.error === 'Username is already in the database') return true;
-      // return false;
-      // THIS VERSION DOES NOT WORK; IT'S RETURNING TRUE AUTOMATICALLY WHEN IT SHOULD CHOOSE BASED ON IF STATUS
-
-      // MAIN ISSUE: FUNCTIONS OR 'VALIDATE' ARE NOT DISTINGUISHING BETWEEN TRUE AND FALSE EITHER CAUSING THE RETURNED VALUE TO ALWAYS BE FALSE -> CAUSES ERROR TO POP UP??? (SHOULD ONLY TRIGGER DURING TRUE) ...OR PREVENTING AXIOS CALL 
-
-  
+  // OPTIMIZING FORM:
+    // SHOW USERNAME/EMAIL TAKEN BEFORE SUBMITTING FORM
+    // OR
+    // SHOW USERNAME/EMAIL TAKEN AFTER SUBMITTING FORM WITHOUT ERASING INFO ALREADY IN FORM
 
   if(isFetching){
     return(
