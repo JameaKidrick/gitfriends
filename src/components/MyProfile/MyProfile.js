@@ -42,7 +42,7 @@ const MyProfile = (props) => {
       {profile.about_me && (
         <h3>about me: {profile.about_me}</h3>
       )}
-      <button><Link to={`/myprofile/${userid}/editprofile`}>Edit</Link></button>
+      <Link to={`/myprofile/${userid}/editprofile`}><button>Edit</button></Link>
     </div>
   )
 }

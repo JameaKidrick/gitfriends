@@ -14,6 +14,7 @@ export const PROFILECREATED_SUCCESS = 'PROFILECREATED_SUCCESS';
 export const FETCHLANGUAGES_SUCCESS = 'FETCHLANGUAGES_SUCCESS';
 export const ADDLANGUAGES_SUCCESS = 'ADDLANGUAGES_SUCCESS';
 export const GETUSERPROFILE_SUCCESS = 'GETUSERPROFILE_SUCCESS';
+export const FETCHUSERLANGUAGES_SUCCESS = 'FETCHUSERLANGUAGES_SUCCESS';
 
 
 // ACTION CREATORS
@@ -161,5 +162,18 @@ export const editProfile = (profileId, info) => dispatch => {
     .put(`/profiles/${profileId}`, info)
     .then(response => {
       console.log(response)
+    })
+}
+
+export const getUserLanguages = (profileid) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  axiosWithAuth()
+    .get(`/profiles/${profileid}/fave`)
+    .then(response => {
+      dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      console.log(error.response.data.error)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
     })
 }

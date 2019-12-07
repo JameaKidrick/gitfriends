@@ -47,6 +47,7 @@ const CreateProfile = (props) => {
   const [choice, setChoice] = useState('')
   const [DOB, setDOB] = useState(new Date());
   const [DOBFormat, setDOBFormat] = useState('');
+  const [format, setFormat] = useState('');
   const [location, setLocation] = useState('');
   const [aboutMe, setAboutMe] = useState('');
   const [profile, setProfile] = useState({avatar:'', dob_display:''});
@@ -56,8 +57,8 @@ const CreateProfile = (props) => {
   }, [])
 
   useEffect(() => {
-    setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`, location:`${location}`, about_me:`${aboutMe}`})
-  }, [choice, DOBFormat, location, aboutMe])
+    setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`, dobFormat:`${format}`, location:`${location}`, about_me:`${aboutMe}`})
+  }, [choice, DOBFormat, format, location, aboutMe])
 
   // // YUP VALIDATION
   // let schema = yup.object().shape({
@@ -96,7 +97,17 @@ const CreateProfile = (props) => {
   }
   
   const handleDOBDisplay = e => {
+    console.log(e.target.name)
     setDOBFormat(e.target.value)
+    if(e.target.name === 'NoDOB'){
+      setFormat('')
+    }else if(e.target.name === 'MonthDOB'){
+      setFormat('mm')
+    }else if(e.target.name === 'PartialDOB'){
+      setFormat('mm yyyy')
+    }else if(e.target.name === 'FullDOB'){
+      setFormat('mm dd yyyy')
+    }
   }
 
   // HANDLE LOCATION
@@ -151,28 +162,28 @@ const CreateProfile = (props) => {
 
         <RadioGroup aria-label="category" name="category" value={DOBFormat} onChange={handleDOBDisplay}>
           <FormControlLabel
-          name='DOB'
+          name='MonthDOB'
           value={formatMonthDate(DOB)}
           control={<ColoredRadio />} 
           label="mm"
           />
 
           <FormControlLabel
-          name='DOB'
+          name='PartialDOB'
           value={formatPartialDate(DOB)}
           control={<ColoredRadio />} 
           label="mm yyyy"
           />
 
           <FormControlLabel
-          name='DOB'
+          name='FullDOB'
           value={formatFullDate(DOB)}
           control={<ColoredRadio />} 
           label="mm dd yyyy"
           />
 
           <FormControlLabel
-          name='DOB'
+          name='NoDOB'
           value=''
           control={<ColoredRadio />} 
           label="do not display"

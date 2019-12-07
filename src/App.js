@@ -15,7 +15,7 @@ import CreateProfile from './components/CreateProfile/Page1_Create';
 import FaveLanguage from './components/CreateProfile/Page2_FaveLang';
 import MyProfile from './components/MyProfile/MyProfile';
 import UserProfile from './components/UserProfile/UserProfile';
-import EditProfile from './components/MyProfile/EditProfile';
+import EditProfile from './components/MyProfile/EditProfile/EditProfile';
 
 // ACTIONS
 import { logoutUser } from './actions';
