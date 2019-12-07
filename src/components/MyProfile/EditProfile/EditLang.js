@@ -10,15 +10,21 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { connect, useSelector } from 'react-redux';
 
+// BUG/PROBLEM/TODO: 
+  // NEEDED TO FIGURE OUT HOW TO ADD CHECKED LANGUAGES BY DEFAULT
+  // WHEN UNCHECKED: REMOVE FROM FAVES
+  // WHEN CHECKED: ADD TO FAVES
+
 const EditFaveLanguage = (props) => {
   const languages = useSelector(state => state.languages);
   const userLanguages = useSelector(state => state.userLanguages);
 
   const profileid = localStorage.getItem('profileid');
   const profile = Number(localStorage.getItem('profileid'))
-  const [state, setState] = useState(false)
+  const [state, setState] = useState(true)
   const [fave, setFave] = useState([])
   const [list, setList] = useState(languages)
+  const [check, setCheck] = useState(false)
 
   useEffect(() => {
     props.getUserLanguages(profileid);
@@ -28,7 +34,7 @@ const EditFaveLanguage = (props) => {
 
   console.log('languages', languages)
   useEffect(() => {
-    userLanguages.map(item => {
+    languages.map(item => {
   //     // const lang = languages.filter(element => {
   //     //   // console.log('2', element)
   //     //   return element.language_id === item.language_id
@@ -50,18 +56,21 @@ const EditFaveLanguage = (props) => {
   //         return list.push(allLang[0])
   //       }
   //     })
-    languages.map(element => {
-      if(element.language_id === item.language_id){
-        setState(true)
-      }
-    })
+      userLanguages.map(element => {
+        if(element.language_id === item.language_id){
+          setState({ ...state, [element.language_id]: true })
+          setCheck(false)
+        }
+      })
     })
     
   }, ([userLanguages]))
+  console.log(state, check)
 
   const handleChange = name => e => {
     setState({ ...state, [name]: e.target.checked });
     setFave([...fave, {language_id:name}])
+    setCheck(!e.target.checked)
     if(e.target.checked === false){
       const remove = fave.filter(element => {
         return element.language_id !== name 
@@ -74,18 +83,17 @@ const EditFaveLanguage = (props) => {
     e.preventDefault();
     props.addFaveLanguages(profile, fave.slice(1), props.history)
   }
-console.log(state)
+
   return(
     <div>
       Hello FaveLanguage Page!
       {/* <form onSubmit={handleSubmit}> */}
         
-        <div style={{border:'2px solid black', display:'flex', flexWrap:'wrap',justifyContent:'space-between', width:'100%' }}>
-          <div style={{border:'2px solid black', display:'flex', flexWrap:'wrap', width: '50%'}}>
+        <div style={{border:'2px solid black', }}>
+          <div style={{border:'2px solid black'}}>
             {languages.map((item, index) => {
               return(
                 <div key={index}>
-                  {console.log(state)}
                   <FormControlLabel
                     control={<Checkbox 
                       name={item.language_id}
