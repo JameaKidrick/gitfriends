@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect, useSelector } from 'react-redux'; 
+import { connect } from 'react-redux'; 
 
 // STYLE
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,6 +25,7 @@ const UserProfile = (props) => {
   useEffect(() => {
     props.getUserProfile(props.match.params.id, setProfile, setUser);
     props.check();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
   return(

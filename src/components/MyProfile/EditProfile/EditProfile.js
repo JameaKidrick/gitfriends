@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { avatarList } from '../../CreateProfile/AvatarList';
 
@@ -21,8 +20,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import { grey } from '@material-ui/core/colors';
 import { TextField } from '@material-ui/core';
 
@@ -103,11 +100,12 @@ const EditProfile = (props) => {
   useEffect(() => {
     props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     setUpdateProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`, dobFormat:`${format}`, location:`${location}`, about_me:`${aboutMe}`})
-  }, [choice, DOBFormat, location, aboutMe])
+  }, [choice, DOBFormat, location, aboutMe, format])
 
   // SETTING INITIAL SETTINGS
   useEffect(() => {
@@ -146,9 +144,9 @@ const EditProfile = (props) => {
   }
 
   // HANDLE DOB
-  const handleDOBChange = date => {
-    setDOB(date)
-  }
+  // const handleDOBChange = date => {
+  //   setDOB(date)
+  // }
   
   const handleDOBDisplay = e => {
     setFormat(e.target.value)
@@ -201,7 +199,7 @@ const EditProfile = (props) => {
             <h2>avatar</h2>
             <h3>avatar selected:</h3>
             <Avatar src={choice} className={classes.bigAvatar} />
-            {console.log('CHOICE', choice)}
+            {/* {console.log('CHOICE', choice)} */}
             <h3>choose an avatar:</h3>
             <div style={{border:'2px solid red', display:'flex', flexWrap:'wrap', width:'25%'}}>
               {avatarList.map((pic, index) => {
@@ -278,7 +276,7 @@ const EditProfile = (props) => {
             value={aboutMe}
           />
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={3} style={{width:'80%', height:'100%'}}>
           <EditFaveLanguage />
         </TabPanel>
         <TabPanel value={value} index={4}>

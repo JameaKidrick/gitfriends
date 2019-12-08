@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect, useSelector } from 'react-redux'; 
+import { connect } from 'react-redux'; 
 import { Link } from 'react-router-dom';
 
 // STYLE
@@ -28,6 +28,7 @@ const MyProfile = (props) => {
   useEffect(() => {
     props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return(

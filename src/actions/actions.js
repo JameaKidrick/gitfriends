@@ -117,6 +117,7 @@ export const getLanguages = () => dispatch => {
   axiosWithAuth()
     .get('/fave')
     .then(response => {
+      console.log('GETLANGUAGES RESPONSE', response.data)
       dispatch({ type: FETCHLANGUAGES_SUCCESS, payload: response.data })
     })
     .catch(error => {
@@ -170,10 +171,11 @@ export const getUserLanguages = (profileid) => dispatch => {
   axiosWithAuth()
     .get(`/profiles/${profileid}/fave`)
     .then(response => {
-      dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data })
+      // console.log('GETUSERLANGUAGES RESPONSE', response.data)
+        dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data })
     })
     .catch(error => {
-      console.log(error.response.data.error)
-      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+      console.log(error)
+      dispatch({ type: FETCH_FAILURE, payload: error })
     })
 }

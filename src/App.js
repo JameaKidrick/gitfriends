@@ -23,7 +23,7 @@ import { logoutUser } from './actions';
 function App(props) {
   const [userid, setUserid] = useState(0)
   const loggedIn = useSelector(state => state.loggedIn)
-  console.log(userid, typeof(userid))
+  // console.log(userid, typeof(userid))
   
   useEffect(() => {
     setUserid(Number(localStorage.getItem('userid')));

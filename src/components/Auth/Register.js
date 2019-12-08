@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import useForm from "react-hook-form";
-import { axiosWithAuth } from '../../utils/axiosWithAuth'
 
 // ACTIONS
 import { registerUser }from '../../actions';
@@ -13,7 +12,7 @@ import Button from '@material-ui/core/Button';
 
 
 const Register = (props) => {
-  let { register, handleSubmit, errors, clearError, setError } = useForm();
+  let { register, handleSubmit, errors, clearError} = useForm();
   const isFetching = useSelector(state => state.isFetching);
   const error = useSelector(state => state.error);
 

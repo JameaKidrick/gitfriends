@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { avatarList } from './AvatarList';
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
-import * as yup from 'yup';
 
 // ACTIONS  
 import { createProfile, check } from '../../actions';
@@ -15,8 +13,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import { grey } from '@material-ui/core/colors';
 import { TextField } from '@material-ui/core';
 
@@ -54,6 +50,7 @@ const CreateProfile = (props) => {
 
   useEffect(() => {
     props.check()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
