@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux'; 
 import { Link } from 'react-router-dom';
 
-// STYLE
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+// COMPONENTS
+import DeleteProfileModal from './DeleteProfile';
 
 // ACTIONS
 import { getUserProfile, check } from '../../actions';
+
+// STYLE
+import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -43,7 +46,8 @@ const MyProfile = (props) => {
       {profile.about_me && (
         <h3>about me: {profile.about_me}</h3>
       )}
-      <Link to={`/myprofile/${userid}/editprofile`}><button>Edit</button></Link>
+      <Link to={`/myprofile/${userid}/editprofile`}><button>edit profile</button></Link>
+      <DeleteProfileModal history={props.history} />
     </div>
   )
 }
