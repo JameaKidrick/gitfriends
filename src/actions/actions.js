@@ -14,7 +14,9 @@ export const PROFILECREATED_SUCCESS = 'PROFILECREATED_SUCCESS';
 export const FETCHLANGUAGES_SUCCESS = 'FETCHLANGUAGES_SUCCESS';
 export const ADDLANGUAGES_SUCCESS = 'ADDLANGUAGES_SUCCESS';
 export const GETUSERPROFILE_SUCCESS = 'GETUSERPROFILE_SUCCESS';
+export const EDITPROFILE_SUCCESS = 'EDITPROFILE_SUCCESS';
 export const FETCHUSERLANGUAGES_SUCCESS = 'FETCHUSERLANGUAGES_SUCCESS';
+export const EDITFAVELANGUAGES_SUCCESS = 'EDITFAVELANGUAGES_SUCCESS';
 
 
 // ACTION CREATORS
@@ -117,7 +119,6 @@ export const getLanguages = () => dispatch => {
   axiosWithAuth()
     .get('/fave')
     .then(response => {
-      console.log('GETLANGUAGES RESPONSE', response.data)
       dispatch({ type: FETCHLANGUAGES_SUCCESS, payload: response.data })
     })
     .catch(error => {
@@ -162,7 +163,11 @@ export const editProfile = (profileId, info) => dispatch => {
   axiosWithAuth()
     .put(`/profiles/${profileId}`, info)
     .then(response => {
-      console.log(response)
+      dispatch({ type: EDITPROFILE_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      console.log(error.response.data.error)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
     })
 }
 
@@ -171,11 +176,25 @@ export const getUserLanguages = (profileid) => dispatch => {
   axiosWithAuth()
     .get(`/profiles/${profileid}/fave`)
     .then(response => {
-      // console.log('GETUSERLANGUAGES RESPONSE', response.data)
-        dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data })
+      dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data })
     })
     .catch(error => {
-      console.log(error)
-      dispatch({ type: FETCH_FAILURE, payload: error })
+      console.log(error.response.data.error)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
     })
+}
+
+export const editUserLanguages = (profileid, fave, history) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  fave.forEach(element => {
+    axiosWithAuth()
+    .post(`/profiles/${profileid}/updateFave`, element)
+    .then(response => {
+      dispatch({ type: EDITFAVELANGUAGES_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      console.log(error.response.data.error)
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+    })
+  })
 }

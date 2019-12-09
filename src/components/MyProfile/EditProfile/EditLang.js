@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // ACTIONS
-import { getLanguages, getUserLanguages, addFaveLanguages, check } from '../../../actions';
+import { getLanguages, getUserLanguages, editUserLanguages, check } from '../../../actions';
 
 // STYLES
 import Favorite from '@material-ui/icons/Favorite';
@@ -16,15 +16,11 @@ const FaveLanguage = (props) => {
   const languages = useSelector(state => state.languages);
   const userLanguages = useSelector(state => state.userLanguages);
 
-  console.log( 'LANGUAGES', languages)
-
   const profileid = Number(localStorage.getItem('profileid'));
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [dislikes2, setDislikes2] = useState([]);
   const [fave, setFave] = useState([]);
-  // const [added, setAdded] = useState([]);
-  // const [removed, setRemoved] = useState([]);
 
   useEffect(() => {
     props.getLanguages();
@@ -38,62 +34,21 @@ const FaveLanguage = (props) => {
     setDislikes(languages)
   }, [languages, userLanguages])
 
-   // ...state,
-        // userLanguages: action.payload,
-        // removedUserLanguages: state.removedUserLanguages.map(element => {
-        //   console.log(state.removedUserLanguages)
-        //   action.payload.reduce(function(idk, item){
-        //     if(item.language_id !== element.language_id){
-        //       return state.removedUserLanguages.push(element)
-        //     }else{
-        //       return false
-        //     }
-        //   })
-        // }),
-        // isFetching: false,
-        // error: ''
-
   useEffect(() => {
-    // const remove = likes.map(item => {
-    //   const removeFromDislikes = dislikes.filter(element => {
-    //     return !(element.language_id === item.language_id)
-    //   })
-    //   setDislikes(removeFromDislikes)
-    //   return removeFromDislikes
-    // })
-    const remove = dislikes.map(item => {
-      for(let i = 0; i < likes.length; i++){
-        // console.log(item, likes[i])
-        if(item.language_id !== likes[i].language_id){
-          console.log('PUSHING', i, item)
-          return dislikes2.push(item)
-        }else{
-          return item
-        }
-      }
+    const fullArray = languages.length+1
+    likes.map(item => {
+      return dislikes.splice(item.language_id-(fullArray-dislikes.length), 1)
     })
-    console.log(remove)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [languages])
-
-  console.log(dislikes2)
-  
-  useEffect(() => {
-    // likes.map(item => {
-    //   setFave([...fave, {language_id:item.language_id}])
-    //   return fave
-    // })
+    setDislikes2(dislikes)
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [likes])
 
   useEffect(() => {
-    // COMPARE FAVE (NEW USER FAVE LANGUAGE LIST) TO USERLANGUAGES (OLD USER FAVE LANGUAGE LIST)
-      // IF FAVE HAS LANGUAGE THAT IS NOT IN USERLANGUAGES, ADD TO 'ADDED' STATE
-        // ADD MODEL TO ADD TO JXN TABLE
-      // IF FAVE DOES NOT HAVE LANGUAGE THAT IS IN USERLANGUAGES, ADD TO 'REMOVED' STATE
-        // REMOVE MODEL TO DELETE FROM JXN TABLE
-      // OTHERWISE DO NOTHING
-  }, [fave])
+    setFave(likes.map(item => {
+      return {language_id:item.language_id}
+    }))
+  }, [likes])
 
   const addLanguage = value => {
     const addToLikes = dislikes.filter(element => {
@@ -119,12 +74,12 @@ const FaveLanguage = (props) => {
   
   const handleSubmit = e => {
     e.preventDefault();
-    props.addFaveLanguages(profileid, fave, props.history)
+    props.editUserLanguages(profileid, fave, props.history);
   }
 
   return(
-    // <div style={{border:'2px solid black', width:'50%'}}>
-      <div onSubmit={handleSubmit} style={{display:'flex', justifyContent: 'center', width:'100%'}}>
+    <form onSubmit={handleSubmit}>
+      <div style={{display:'flex', justifyContent: 'center', width:'100%'}}>
         {!dislikes[0] ?
           <div style={{width:'40%', border:'2px solid blue', textAlign:'center'}}>
             <h2>genius alert!</h2>
@@ -161,13 +116,13 @@ const FaveLanguage = (props) => {
             })}
         </List>
         }
-        {/* <button type='submit'>Submit</button> */}
+        <button type='submit'>Submit</button>
       </div>
-    // </div>
+    </form>
   )
 }
 
 export default connect(
   null,
-  { getLanguages, getUserLanguages, addFaveLanguages, check }
+  { getLanguages, getUserLanguages, editUserLanguages, check }
 )(FaveLanguage);
