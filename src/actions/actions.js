@@ -198,3 +198,17 @@ export const editUserLanguages = (profileid, fave, history) => dispatch => {
     })
   })
 }
+
+export const editUser = (userid, info, history) => dispatch => {
+  dispatch({ type: START_FETCHING })
+  axiosWithAuth()
+  .put(`/users/${userid}`, info)
+  .then(response => {
+    console.log(response)
+    // dispatch({ type: EDITUSER_SUCCESS, payload: response.data })
+  })
+  .catch(error => {
+    console.log(error.response)
+    dispatch({ type: FETCH_FAILURE, payload: error.response.data.error })
+  })
+}

@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { getUserProfile, check, editProfile, } from '../../../actions';
 
 // STYLES
-
 import { TextField } from '@material-ui/core';
 
 const EditLocationAndAboutMe = (props) => {

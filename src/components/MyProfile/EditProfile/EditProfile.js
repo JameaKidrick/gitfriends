@@ -6,6 +6,7 @@ import EditAvatar from './EditAvatar';
 import EditBirthdateDisplay from './EditBirthdateDisplay';
 import EditLocationAboutMe from './EditLocationAboutMe';
 import EditFaveLanguage from "./EditLang";
+import EditUser from "./EditUser";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
@@ -50,19 +51,17 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: "flex",
-    height: 500
+    height: 300
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`
   }
 }));
 
-
-
 const EditProfile = props => {
   // STYLES
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(4);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -85,8 +84,6 @@ const EditProfile = props => {
           <Tab label="location & about me" {...a11yProps(2)} />
           <Tab label="favorite language" {...a11yProps(3)} />
           <Tab label="user settings" {...a11yProps(4)} />
-          <Tab label="Item Six" {...a11yProps(5)} />
-          <Tab label="Item Seven" {...a11yProps(6)} />
         </Tabs>
 
         <TabPanel
@@ -110,13 +107,7 @@ const EditProfile = props => {
           <EditFaveLanguage />
         </TabPanel>
         <TabPanel value={value} index={4}>
-          Item Five
-        </TabPanel>
-        <TabPanel value={value} index={5}>
-          Item Six
-        </TabPanel>
-        <TabPanel value={value} index={6}>
-          Item Seven
+          <EditUser />
         </TabPanel>
       </div>
     </>
