@@ -1,5 +1,4 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
@@ -39,11 +38,9 @@ const DeleteProfileModal = (props) => {
 
   const cancelModal = () => {
     setOpen(false)
-    console.log(props)
   }
 
   const deleteProfile = () => {
-    console.log('DELETED', props)
     props.deleteUser(userid, props.history)
   }
 
@@ -53,8 +50,7 @@ const DeleteProfileModal = (props) => {
         delete profile
       </button>
       <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+        aria-labelledby="delete-modal-title"
         className={classes.modal}
         open={open}
         onClose={handleClose}
@@ -66,8 +62,8 @@ const DeleteProfileModal = (props) => {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">are you sure you want to delete your profile?</h2>
-            <p id="transition-modal-description">you will not be able to undo this and your friends will miss you... a lot...</p>
+            <h2>are you sure you want to delete your profile?</h2>
+            <p>you will not be able to undo this and your friends will miss you... a lot...</p>
             <Button onClick={()=>deleteProfile()}>yes, delete</Button>
             <Button onClick={()=>cancelModal()}>no, i'll stay</Button>
           </div>

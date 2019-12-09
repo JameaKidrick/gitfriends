@@ -16,6 +16,7 @@ import FaveLanguage from "./components/CreateProfile/Page2_FaveLang";
 import MyProfile from "./components/MyProfile/MyProfile";
 import UserProfile from "./components/UserProfile/UserProfile";
 import EditProfile from "./components/MyProfile/EditProfile/EditProfile";
+import FriendRequests from "./components/MyProfile/FriendRequests";
 
 // ACTIONS
 import { logoutUser } from "./actions";
@@ -55,14 +56,18 @@ function App(props) {
         )}
         <br />
         {loggedIn && (
-          <Link
-            to="/"
-            onClick={() => {
-              logOut();
-            }}
-          >
-            Logout
-          </Link>
+          <>
+            <Link to={`/myprofile/${userid}/friendrequests`}>Friends List</Link>
+            <br />
+            <Link
+              to="/"
+              onClick={() => {
+                logOut();
+              }}
+            >
+              Logout
+            </Link>
+          </>
         )}
 
         <Switch>
@@ -102,6 +107,15 @@ function App(props) {
               strict: false
             })}
             component={EditProfile}
+          />
+          <PrivateRoute
+            path={`/myprofile/:id/friendrequests`}
+            {...matchPath(`/myprofile/${userid}/friendrequests`, {
+              path: `/myprofile/:id/friendrequests`,
+              exact: true,
+              strict: false
+            })}
+            component={FriendRequests}
           />
           <Route component={ErrorPage} />
         </Switch>

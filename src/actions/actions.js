@@ -17,6 +17,7 @@ export const GETUSERPROFILE_SUCCESS = "GETUSERPROFILE_SUCCESS";
 export const EDITPROFILE_SUCCESS = "EDITPROFILE_SUCCESS";
 export const FETCHUSERLANGUAGES_SUCCESS = "FETCHUSERLANGUAGES_SUCCESS";
 export const EDITFAVELANGUAGES_SUCCESS = "EDITFAVELANGUAGES_SUCCESS";
+export const FETCHFRIENDREQUESTS_SUCCESS = "FETCHFRIENDREQUESTS_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -230,3 +231,16 @@ export const deleteUser = (userid, history) => dispatch => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
+
+export const getFriendRequests = (userid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get(`/users/${userid}/requests`)
+    .then(response => {
+      dispatch({ type: FETCHFRIENDREQUESTS_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      console.log(error);
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
