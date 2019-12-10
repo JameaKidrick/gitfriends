@@ -18,6 +18,7 @@ export const EDITPROFILE_SUCCESS = "EDITPROFILE_SUCCESS";
 export const FETCHUSERLANGUAGES_SUCCESS = "FETCHUSERLANGUAGES_SUCCESS";
 export const EDITFAVELANGUAGES_SUCCESS = "EDITFAVELANGUAGES_SUCCESS";
 export const FETCHFRIENDREQUESTS_SUCCESS = "FETCHFRIENDREQUESTS_SUCCESS";
+export const FETCHFRIENDSTATUSES_SUCCESS = "FETCHFRIENDSTATUSES_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -219,7 +220,6 @@ export const deleteUser = (userid, history) => dispatch => {
     .delete(`/users/${userid}`)
     .then(response => {
       console.log(response, history);
-      // dispatch({ type: EDITUSER_SUCCESS, payload: response.data })
       localStorage.removeItem("token");
       localStorage.removeItem("userid");
       localStorage.removeItem("username");
@@ -241,6 +241,33 @@ export const getFriendRequests = (userid) => dispatch => {
     })
     .catch(error => {
       console.log(error);
-      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+      dispatch({ type: FETCH_FAILURE, payload: error });
+    });
+}
+
+export const respondToFriendRequest = (userid, requestid, decision) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .put(`/users/${userid}/requests/${requestid}`, decision)
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error);
+      dispatch({ type: FETCH_FAILURE, payload: error });
+    });
+}
+
+export const findFriendshipStatus = (userid, friendid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get(`/users/${userid}/status/${friendid}`)
+    .then(response => {
+      console.log(response.data)
+      dispatch({ type: FETCHFRIENDSTATUSES_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      console.log(error);
+      dispatch({ type: FETCH_FAILURE, payload: error });
     });
 }

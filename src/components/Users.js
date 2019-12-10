@@ -14,11 +14,12 @@ import { Link } from 'react-router-dom';
 // import I from '../images/8.jpg';
 
 // ACTIONS
-import { getAllProfilesWithUsers, check } from '../actions';
+import { getAllProfilesWithUsers, check, findFriendshipStatus } from '../actions';
 
 const Users = (props) => {
   const isFetching = useSelector(state => state.isFetching)
   const profiles = useSelector(state => state.profiles)
+  const userid = Number(localStorage.getItem('userid'));
 
   useEffect(() => {
     props.getAllProfilesWithUsers()
@@ -39,7 +40,8 @@ const Users = (props) => {
       </div>
     )
   }
-
+// INFINITE LOOP ALERT
+// FIGURE OUT HOW TO FIND THE FRIENDSHIP STATUS PER USER AND ADD CORRESPONDING BUTTON
   return(
     <div style={{border:'1px solid black', display:'flex', flexWrap:'wrap'}}>
       {sortedProfiles.map((item, index)=> {
@@ -54,6 +56,7 @@ const Users = (props) => {
                   <img src={item.avatar} alt={`avatar ${index}`} style={{width:'100px'}} />
               </div>
             </Link>
+            {props.findFriendshipStatus(userid, item.user_id) && console.log('yes')}
           </div>
         )
       })}
@@ -63,5 +66,5 @@ const Users = (props) => {
 
 export default connect(
   null,
-  { getAllProfilesWithUsers, check }
+  { getAllProfilesWithUsers, check, findFriendshipStatus }
 )(Users);
