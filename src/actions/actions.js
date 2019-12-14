@@ -26,6 +26,7 @@ export const DELETEFRIEND_SUCCESS = "DELETEFRIEND_SUCCESS";
 export const SENDFRIENDREQUEST_SUCCESS = "SENDFRIENDREQUEST_SUCCESS";
 export const DELETEFRIENDREQUEST_SUCCESS = "DELETEFRIENDREQUEST_SUCCESS";
 export const FETCHUSERPOSTS_SUCCESS = "FETCHUSERPOSTS_SUCCESS";
+export const FETCHPOSTCOMMENTS_SUCCESS = "FETCHPOSTCOMMENTS_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -340,4 +341,30 @@ export const getUserPosts = (userid) => dispatch => {
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
+}
+
+export const getPostComments = (postid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get(`/posts/${postid}/comments`)
+    .then(response => {
+      console.log(response.data)
+      dispatch({ type: FETCHPOSTCOMMENTS_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
+export const createComment = (postid, comment) => dispatch => {
+
+  axiosWithAuth()
+    .post(`/posts/${postid}/comments`, comment)
+    .then(response => {
+      console.log(response)
+    })
+}
+
+export const createPost = () => dispatch => {
+  
 }
