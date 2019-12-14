@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux'; 
+import { connect, useSelector } from 'react-redux'; 
 import { Link } from 'react-router-dom';
 
 // COMPONENTS
@@ -11,6 +11,7 @@ import { getUserProfile, check } from '../../actions';
 // STYLE
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import Posts from './Posts';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -23,7 +24,7 @@ const MyProfile = (props) => {
   // STYLES
   const classes = useStyles();
 
-  const userid = Number(localStorage.getItem('userid'))
+  const userid = Number(localStorage.getItem('userid'));
 
   const [profile, setProfile] = useState([])
   const [user, setUser] = useState([])
@@ -35,7 +36,7 @@ const MyProfile = (props) => {
   }, [])
 
   return(
-    <div>
+    <div className='myProfileContainer'>
       <Avatar src={profile.avatar} className={classes.bigAvatar}></Avatar>
       <h1>{user.username}</h1>
       {profile.location && (
@@ -48,6 +49,8 @@ const MyProfile = (props) => {
       )}
       <Link to={`/myprofile/${userid}/editprofile`}><button>edit profile</button></Link>
       <DeleteProfileModal history={props.history} />
+      <br />
+      <Posts />
     </div>
   )
 }

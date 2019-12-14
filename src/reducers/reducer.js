@@ -1,5 +1,5 @@
 import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, FETCHPROFILES_SUCCESS, PROFILECREATED_SUCCESS, FETCHLANGUAGES_SUCCESS, ADDLANGUAGES_SUCCESS, GETUSERPROFILE_SUCCESS, FETCHUSERLANGUAGES_SUCCESS, EDITUSER_SUCCESS,FETCHFRIENDREQUESTS_SUCCESS, RESPONDTOREQUEST_SUCCESS, FETCHFRIENDSTATUSES_SUCCESS, FETCHFRIENDS_SUCCESS, SENDFRIENDREQUEST_SUCCESS,
-DELETEFRIENDREQUEST_SUCCESS } from '../actions';
+DELETEFRIENDREQUEST_SUCCESS, FETCHUSERPOSTS_SUCCESS } from '../actions';
 
 export const initialState = {
   users: [],
@@ -9,6 +9,7 @@ export const initialState = {
   userLanguages: [],
   requests:[],
   friends: [],
+  userPosts: [],
   loggedIn: false,
   isFetching: false,
   error: ''
@@ -99,9 +100,16 @@ export const reducer = (state = initialState, action) => {
       return{
         ...state,
         friends: action.payload,
-        isFetching:false,
+        isFetching: false,
         error: ''
       };
+    case FETCHUSERPOSTS_SUCCESS:
+      return{
+        ...state,
+        posts: action.payload,
+        isFetching: false,
+        error: ''
+      }
     default:
       return state
   }

@@ -25,6 +25,7 @@ export const FETCHFRIENDS_SUCCESS = "FETCHFRIENDS_SUCCESS";
 export const DELETEFRIEND_SUCCESS = "DELETEFRIEND_SUCCESS";
 export const SENDFRIENDREQUEST_SUCCESS = "SENDFRIENDREQUEST_SUCCESS";
 export const DELETEFRIENDREQUEST_SUCCESS = "DELETEFRIENDREQUEST_SUCCESS";
+export const FETCHUSERPOSTS_SUCCESS = "FETCHUSERPOSTS_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -322,6 +323,19 @@ export const deleteFriendRequest = (requestid) => dispatch => {
     .delete(`/requests/${requestid}`)
     .then(response => {
       dispatch({ type: DELETEFRIENDREQUEST_SUCCESS })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
+export const getUserPosts = (userid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get(`/users/${userid}/posts`)
+    .then(response => {
+      console.log(response.data)
+      dispatch({ type: FETCHUSERPOSTS_SUCCESS, payload: response.data })
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
