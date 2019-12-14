@@ -1,24 +1,49 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, useSelector } from 'react-redux';
+import useForm from "react-hook-form";
 
 // ACTIONS
 import { registerUser }from '../../actions';
 
+// STYLE
+import { TextField } from '@material-ui/core';
+import FormHelperText from '@material-ui/core/FormHelperText'
+import Button from '@material-ui/core/Button';
+
+
 const Register = (props) => {
-  const isFetching = useSelector(state => state.isFetching)
-  const error = useSelector(state => state.error)
+  let { register, handleSubmit, errors, clearError} = useForm();
+  const isFetching = useSelector(state => state.isFetching);
+  const error = useSelector(state => state.error);
 
-  const [credentials, setCredentials] = useState({ username: '', password: '', first_name: '', last_name: '', date_of_birth: '', email: '' })
-
-  const handleChange = e => {
-    e.persist();
-    setCredentials({ ...credentials, [e.target.name]:e.target.value })
+  const handleUsernameChange = e => {
+    return clearError("username")
   }
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    props.registerUser(credentials, props.history)
+  const handleEmailChange = e => {
+    return clearError("email")
   }
+
+  // const validateForm= e => {
+  //   if(error.error){
+  //     setError('username', 'please try again')
+  //   }else{
+  //     return true
+  //   }
+  // }
+
+  const handleFormSubmit = (data, e)=> {
+    // e.preventDefault()
+    // e.persist()
+    // validateForm()
+    props.registerUser(data, props.history)
+    console.log('DATA', data)
+  }
+
+  // OPTIMIZING FORM:
+    // SHOW USERNAME/EMAIL TAKEN BEFORE SUBMITTING FORM
+    // OR
+    // SHOW USERNAME/EMAIL TAKEN AFTER SUBMITTING FORM WITHOUT ERASING INFO ALREADY IN FORM
 
   if(isFetching){
     return(
@@ -34,52 +59,81 @@ const Register = (props) => {
     <div>
       Hello RegisterPage!
       <br />
-      {/* {error&& (
-        error
-      )} */}
-      <form onSubmit={handleSubmit}>
-        <input 
-          type='text'
+      <form onSubmit={handleSubmit(handleFormSubmit)} style={{display:'flex', flexDirection:'column'}}>
+        <TextField 
+          label='username*'
           name='username'
-          placeholder='username'
-          onChange={handleChange}
-        />
+          onChange={handleUsernameChange}
+          variant='outlined'
+          inputRef={register({ required:true })}
+          />
+        {errors.username && errors.username.type === "required" && (
+          <FormHelperText error>username is required</FormHelperText>
+          )}
+        {error.error && error.error === 'Username is already in the database' && (
+          <FormHelperText error>this username is already being used</FormHelperText>
+        )}
 
-        <input 
+        <TextField
+          label='password'
           type='password'
           name='password'
-          placeholder='password'
-          onChange={handleChange}
+          variant='outlined'
+          inputRef={register({ required:true })}
         />
+        {errors.password && errors.password.type === "required" && (
+          <FormHelperText error>password is required</FormHelperText>
+        )}
 
-        <input 
+        <TextField
+          label='first name'
           type='text'
           name='first_name'
-          placeholder='first_name'
-          onChange={handleChange}
+          variant='outlined'
+          inputRef={register({ required:true })}
         />
+        {errors.first_name && errors.first_name.type === "required" && (
+          <FormHelperText error>first name is required</FormHelperText>
+        )}
 
-        <input 
+        <TextField
+          label='last name'
           type='text'
           name='last_name'
-          placeholder='last_name'
-          onChange={handleChange}
+          variant='outlined'
+          inputRef={register({ required:true })}
         />
+        {errors.last_name && errors.last_name.type === "required" && (
+          <FormHelperText error>last name is required</FormHelperText>
+        )}
 
-        <input 
+        <TextField
+          label='date of birth'
           type='text'
           name='date_of_birth'
-          placeholder='date_of_birth'
-          onChange={handleChange}
+          variant='outlined'
+          helperText="format: yyyy-mm-dd"
+          inputRef={register({ required:true })}
         />
+        {errors.date_of_birth && errors.date_of_birth.type === "required" && (
+          <FormHelperText error>date of birth is required</FormHelperText>
+        )}
 
-        <input 
+        <TextField
+          label='email'
           type='text'
           name='email'
-          placeholder='email'
-          onChange={handleChange}
-        />
-        <button type='submit'>Submit</button>
+          onChange={handleEmailChange}
+          variant='outlined'
+          inputRef={register({ required:true })}
+          />
+          {errors.email && errors.email.type === "required" && (
+            <FormHelperText error>email is required</FormHelperText>
+          )}
+          {error.error && error.error === 'Email is already in the database' && (
+            <FormHelperText error>this email is already being used</FormHelperText>
+          )}
+        <Button type='submit'>Submit</Button>
       </form>
     </div>
   )
