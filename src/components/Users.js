@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 // import I from '../images/8.jpg';
 
 // ACTIONS
-import { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends } from '../actions';
+import { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends, sendFriendRequest } from '../actions';
 
 const Users = (props) => {
   const isFetching = useSelector(state => state.isFetching);
@@ -76,7 +76,7 @@ const Users = (props) => {
             </Link>
             {friends.find(friend => {
               return (item.user_id === friend.user1_id) && item.user_id !== userid || (item.user_id === friend.user2_id) && item.user_id !== userid
-            }) ? <button>yes</button>: item.user_id === userid ? true : <button>no</button>}
+            }) ? <button>yes</button>: item.user_id === userid ? true : <button onClick={()=>{props.sendFriendRequest(item.user_id)}}>no</button>}
           </div>
         )
       })}
@@ -86,7 +86,7 @@ const Users = (props) => {
 
 export default connect(
   null,
-  { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends }
+  { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends, sendFriendRequest }
 )(Users);
 
 // console.log('2', item.user_id)

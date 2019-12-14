@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // ACTIONS
-import { getFriendRequests, check, respondToFriendRequest } from '../../actions';
+import { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest } from '../../actions';
 
 // STYLE
 import Avatar from '@material-ui/core/Avatar';
@@ -29,29 +29,53 @@ const FriendRequests = (props) => {
   return (
     <div className='friendRequestsContainer'>
       Hey Friends!
-      {requests.map(item => {
-        if(userid === item.user1_id){
-          return(
-            <>
-              <p>REQUEST ID: {item.request_id}</p>
-              <p>USERNAME: {item.user2_username}</p>
-              <Avatar src={item.user2_avatar} />
-              <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
-              <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
-              <button onClick={()=>denyRequest(item.request_id)}>decline</button>
-            </>
-          )
-        }else if(userid === item.user2_id){
-          return(
-            <>
-              <p>REQUEST ID: {item.request_id}</p>
-              <p>USERNAME: {item.user1_username}</p>
-              <Avatar src={item.user1_avatar} />
-              <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
-              <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
-              <button onClick={()=>denyRequest(item.request_id)}>decline</button>
-            </>
-          )
+      {requests.map((item, index) => {
+        if(userid === item.requestor_id){
+          if(userid === item.user1_id){
+            return(
+              <div key={index}>
+                <p>REQUEST ID: {item.request_id}</p>
+                <p>USERNAME: {item.user2_username}</p>
+                <Avatar src={item.user2_avatar} />
+                <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
+                <button onClick={()=>props.deleteFriendRequest(item.request_id)}>cancel request</button>
+              </div>
+            )
+          }else if(userid === item.user2_id){
+            return(
+              <div key={index}>
+                <p>REQUEST ID: {item.request_id}</p>
+                <p>USERNAME: {item.user1_username}</p>
+                <Avatar src={item.user1_avatar} />
+                <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
+                <button onClick={()=>props.deleteFriendRequest(item.request_id)}>cancel request</button>
+              </div>
+            )
+          }
+        }else if(userid !== item.requestor_id){
+          if(userid === item.user1_id){
+            return(
+              <div key={index}>
+                <p>REQUEST ID: {item.request_id}</p>
+                <p>USERNAME: {item.user2_username}</p>
+                <Avatar src={item.user2_avatar} />
+                <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
+                <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
+                <button onClick={()=>denyRequest(item.request_id)}>decline</button>
+              </div>
+            )
+          }else if(userid === item.user2_id){
+            return(
+              <div key={index}>
+                <p>REQUEST ID: {item.request_id}</p>
+                <p>USERNAME: {item.user1_username}</p>
+                <Avatar src={item.user1_avatar} />
+                <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
+                <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
+                <button onClick={()=>denyRequest(item.request_id)}>decline</button>
+              </div>
+            )
+          }
         }
       })}
     </div>
@@ -60,5 +84,5 @@ const FriendRequests = (props) => {
 
 export default connect(
   null,
-  { getFriendRequests, check, respondToFriendRequest }
+  { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest }
 )(FriendRequests);
