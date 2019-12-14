@@ -17,9 +17,12 @@ export const GETUSERPROFILE_SUCCESS = "GETUSERPROFILE_SUCCESS";
 export const EDITPROFILE_SUCCESS = "EDITPROFILE_SUCCESS";
 export const FETCHUSERLANGUAGES_SUCCESS = "FETCHUSERLANGUAGES_SUCCESS";
 export const EDITFAVELANGUAGES_SUCCESS = "EDITFAVELANGUAGES_SUCCESS";
+export const EDITUSER_SUCCESS = "EDITUSER_SUCCESS";
 export const FETCHFRIENDREQUESTS_SUCCESS = "FETCHFRIENDREQUESTS_SUCCESS";
+export const RESPONDTOREQUEST_SUCCESS = "RESPONDTOREQUEST_SUCCESS";
 export const FETCHFRIENDSTATUSES_SUCCESS = "FETCHFRIENDSTATUSES_SUCCESS";
 export const FETCHFRIENDS_SUCCESS = "FETCHFRIENDS_SUCCESS";
+export const DELETEFRIEND_SUCCESS = "DELETEFRIEND_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -206,8 +209,8 @@ export const editUser = (userid, info, history) => dispatch => {
   axiosWithAuth()
     .put(`/users/${userid}`, info)
     .then(response => {
-      console.log(response);
-      // dispatch({ type: EDITUSER_SUCCESS, payload: response.data })
+      // console.log(response);
+      dispatch({ type: EDITUSER_SUCCESS, payload: response.data })
     })
     .catch(error => {
       console.log(error.response);
@@ -251,7 +254,7 @@ export const respondToFriendRequest = (userid, requestid, decision) => dispatch 
   axiosWithAuth()
     .put(`/users/${userid}/requests/${requestid}`, decision)
     .then(response => {
-      console.log(response)
+      dispatch({ type: RESPONDTOREQUEST_SUCCESS })
     })
     .catch(error => {
       console.log(error);
@@ -265,7 +268,7 @@ export const findFriendshipStatus = (userid, friendid) => dispatch => {
   axiosWithAuth()
     .get(`/users/${userid}/status/${friendid}`)
     .then(response => {
-      console.log(response.data)
+      // console.log(response.data)
       dispatch({ type: FETCHFRIENDSTATUSES_SUCCESS, payload: response.data })
     })
     .catch(error => {
@@ -279,7 +282,22 @@ export const getUsersFriends = (userid) => dispatch => {
   axiosWithAuth()
     .get(`/users/${userid}/friends`)
     .then(response => {
-      console.log(response)
       dispatch({ type: FETCHFRIENDS_SUCCESS, payload: response.data })
     })
+    .catch(error => {
+      console.log(error);
+      dispatch({ type: FETCH_FAILURE, payload: error });
+    });
+}
+
+export const deleteFriend = (requestid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .delete(`/friends/${requestid}`)
+    .then(response => {
+      dispatch({ type: DELETEFRIEND_SUCCESS })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
 }

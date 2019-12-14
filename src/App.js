@@ -17,6 +17,7 @@ import MyProfile from "./components/MyProfile/MyProfile";
 import UserProfile from "./components/UserProfile/UserProfile";
 import EditProfile from "./components/MyProfile/EditProfile/EditProfile";
 import FriendRequests from "./components/MyProfile/FriendRequests";
+import FriendsList from './components/MyProfile/Friends';
 
 // ACTIONS
 import { logoutUser } from "./actions";
@@ -58,6 +59,8 @@ function App(props) {
         {loggedIn && (
           <>
             <Link to={`/myprofile/${userid}/friendrequests`}>Friend Requests</Link>
+            <br />
+            <Link to={`/myprofile/${userid}/friends`}>Friend List</Link>
             <br />
             <Link
               to="/"
@@ -116,6 +119,15 @@ function App(props) {
               strict: false
             })}
             component={FriendRequests}
+          />
+          <PrivateRoute 
+            path={`/myprofile/:id/friendrequests`}
+            {...matchPath(`/myprofile/${userid}/friends`, {
+              path: `/myprofile/:id/friends`,
+              exact: true,
+              strict: false
+            })}
+            component={FriendsList}
           />
           <Route component={ErrorPage} />
         </Switch>

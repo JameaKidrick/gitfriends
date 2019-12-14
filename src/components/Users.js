@@ -25,9 +25,9 @@ const Users = (props) => {
   const [allFriends, setAllFriends] = useState([])
 
   useEffect(() => {
-    props.getAllProfilesWithUsers()
+    props.getAllProfilesWithUsers();
     props.check();
-    props.getUsersFriends(userid)
+    props.getUsersFriends(userid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

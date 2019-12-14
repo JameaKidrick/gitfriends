@@ -1,4 +1,4 @@
-import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, FETCHPROFILES_SUCCESS, PROFILECREATED_SUCCESS, FETCHLANGUAGES_SUCCESS, ADDLANGUAGES_SUCCESS, GETUSERPROFILE_SUCCESS, FETCHUSERLANGUAGES_SUCCESS, FETCHFRIENDREQUESTS_SUCCESS, FETCHFRIENDSTATUSES_SUCCESS, FETCHFRIENDS_SUCCESS } from '../actions';
+import { START_FETCHING, FETCH_FAILURE, REGISTER_SUCCESS, LOGIN_SUCCESS, CHECK_SUCCESS, CHECK_FAILURE, LOGOUT_SUCCESS, FETCHUSERS_SUCCESS, FETCHPROFILES_SUCCESS, PROFILECREATED_SUCCESS, FETCHLANGUAGES_SUCCESS, ADDLANGUAGES_SUCCESS, GETUSERPROFILE_SUCCESS, FETCHUSERLANGUAGES_SUCCESS, EDITUSER_SUCCESS,FETCHFRIENDREQUESTS_SUCCESS, RESPONDTOREQUEST_SUCCESS, FETCHFRIENDSTATUSES_SUCCESS, FETCHFRIENDS_SUCCESS } from '../actions';
 
 export const initialState = {
   users: [],
@@ -32,12 +32,15 @@ export const reducer = (state = initialState, action) => {
       case CHECK_SUCCESS:
       case PROFILECREATED_SUCCESS:
       case ADDLANGUAGES_SUCCESS:
-          return{
-            ...state,
-            isFetching: false,
-            error: '',
-            loggedIn: true
-          };
+      case EDITUSER_SUCCESS:
+      case RESPONDTOREQUEST_SUCCESS:
+      case FETCHFRIENDSTATUSES_SUCCESS:
+        return{
+          ...state,
+          isFetching: false,
+          error: '',
+          loggedIn: true
+        };
       case CHECK_FAILURE:
       case LOGOUT_SUCCESS:
       return{
@@ -87,12 +90,6 @@ export const reducer = (state = initialState, action) => {
         ...state,
         requests: action.payload,
         isFetching: false,
-        error: ''
-      };
-    case FETCHFRIENDSTATUSES_SUCCESS:
-      return{
-        ...state,
-        isFetching:false,
         error: ''
       };
     case FETCHFRIENDS_SUCCESS:
