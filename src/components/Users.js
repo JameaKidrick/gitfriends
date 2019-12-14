@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -14,22 +14,40 @@ import { Link } from 'react-router-dom';
 // import I from '../images/8.jpg';
 
 // ACTIONS
-import { getAllProfilesWithUsers, check, findFriendshipStatus } from '../actions';
+import { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends } from '../actions';
 
 const Users = (props) => {
-  const isFetching = useSelector(state => state.isFetching)
-  const profiles = useSelector(state => state.profiles)
+  const isFetching = useSelector(state => state.isFetching);
+  const profiles = useSelector(state => state.profiles);
+  const friends = useSelector(state => state.friends);
   const userid = Number(localStorage.getItem('userid'));
+
+  const [allFriends, setAllFriends] = useState([])
 
   useEffect(() => {
     props.getAllProfilesWithUsers()
     props.check();
+    props.getUsersFriends(userid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    let friendsList = friends.filter(element => {
+      return element.user2_id !== userid
+    })
+    console.log(friendsList)
+  }, [friends])
   
+  // GET ARRAY OF USER'S FRIENDS' IDS
+  // WITHIN THE RETURN, IF ITEM.USER_ID IS WITHIN ARRAY RETURN TRUE/SHOW FRIEND BUTTON OTHERWISE SHOW ADD FRIEND BUTTON
+
   const sortedProfiles = profiles.sort((a, b) => {
     return a.user_id - b.user_id
   })
+
+  console.log(friends)
+  
+  console.log(allFriends)
 
   if(isFetching){
     return(
@@ -56,7 +74,9 @@ const Users = (props) => {
                   <img src={item.avatar} alt={`avatar ${index}`} style={{width:'100px'}} />
               </div>
             </Link>
-            {props.findFriendshipStatus(userid, item.user_id) && console.log('yes')}
+            {friends.find(friend => {
+              return (item.user_id === friend.user1_id) && item.user_id !== userid || (item.user_id === friend.user2_id) && item.user_id !== userid
+            }) ? <button>yes</button>: item.user_id === userid ? true : <button>no</button>}
           </div>
         )
       })}
@@ -66,5 +86,7 @@ const Users = (props) => {
 
 export default connect(
   null,
-  { getAllProfilesWithUsers, check, findFriendshipStatus }
+  { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends }
 )(Users);
+
+// console.log('2', item.user_id)

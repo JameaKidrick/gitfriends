@@ -57,7 +57,7 @@ function App(props) {
         <br />
         {loggedIn && (
           <>
-            <Link to={`/myprofile/${userid}/friendrequests`}>Friends List</Link>
+            <Link to={`/myprofile/${userid}/friendrequests`}>Friend Requests</Link>
             <br />
             <Link
               to="/"

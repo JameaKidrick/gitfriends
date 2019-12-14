@@ -19,6 +19,7 @@ export const FETCHUSERLANGUAGES_SUCCESS = "FETCHUSERLANGUAGES_SUCCESS";
 export const EDITFAVELANGUAGES_SUCCESS = "EDITFAVELANGUAGES_SUCCESS";
 export const FETCHFRIENDREQUESTS_SUCCESS = "FETCHFRIENDREQUESTS_SUCCESS";
 export const FETCHFRIENDSTATUSES_SUCCESS = "FETCHFRIENDSTATUSES_SUCCESS";
+export const FETCHFRIENDS_SUCCESS = "FETCHFRIENDS_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -36,13 +37,13 @@ export const getAllUsers = () => dispatch => {
 export const getAllProfilesWithUsers = () => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
-    .get("/profiles/all")
+    .get(`/profiles/all`)
     .then(response => {
       dispatch({ type: FETCHPROFILES_SUCCESS, payload: response.data });
     })
     .catch(error => {
-      console.log(error.response);
-      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+      console.log(error);
+      dispatch({ type: FETCH_FAILURE, payload: error });
     });
 };
 
@@ -258,6 +259,7 @@ export const respondToFriendRequest = (userid, requestid, decision) => dispatch 
     });
 }
 
+// CAN DELETE???
 export const findFriendshipStatus = (userid, friendid) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
@@ -270,4 +272,14 @@ export const findFriendshipStatus = (userid, friendid) => dispatch => {
       console.log(error);
       dispatch({ type: FETCH_FAILURE, payload: error });
     });
+}
+
+export const getUsersFriends = (userid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get(`/users/${userid}/friends`)
+    .then(response => {
+      console.log(response)
+      dispatch({ type: FETCHFRIENDS_SUCCESS, payload: response.data })
+    })
 }
