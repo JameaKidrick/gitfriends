@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
 
+// COMPONENTS
+import Comments from './Comments';
+
 // ACTIONS
 import { getUserPosts, getPostComments, createComment } from "../../actions";
 
@@ -14,7 +17,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import { Avatar, TextField, Button } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,27 +34,18 @@ const useStyles = makeStyles(theme => ({
   normalText: {
     fontSize: theme.typography.pxToRem(12),
     color: theme.palette.text.secondary
-  },
-  helper: {
-    fontSize: theme.typography.pxToRem(10),
-    color: theme.palette.text.secondary
   }
 }));
 
 const Posts = props => {
   // STYLE
   const classes = useStyles();
-
   const posts = useSelector(state => state.userPosts);
-  const comments = useSelector(state => state.postComments);
   const userid = Number(localStorage.getItem("userid"));
   const [expanded, setExpanded] = useState(false);
   const [postid, setPostid] = useState(0);
   const [makeComment, setMakeComment] = useState({});
 
-  const sortedComments = comments.sort((a, b) => {
-    return a.comment_id - b.comment_id
-  })
 
   useEffect(() => {
     props.getUserPosts(userid);
@@ -73,14 +67,13 @@ const Posts = props => {
     setPostid(Number(e.target.name))
   };
 
-  // console.log(makeComment, Number(postid))
-
   const handleSubmit = e => {
     e.preventDefault()
     props.createComment(postid, makeComment)
     props.getPostComments(postid)
   };
 
+  
   const formatDate = (date) => {
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -144,39 +137,7 @@ const Posts = props => {
                     )}
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
-                    {!comments[0] ? 
-                    <div>
-                      be the first to comment
-                    </div> 
-                    : 
-                    <div>
-                      {sortedComments.map((element, commentIndex) => {
-                        if(!element){
-                          return(
-                            <div>
-                              be the first to comment!
-                            </div>
-                          )
-                        }else{
-                          return(
-                            <div key={commentIndex} style={{border:'1px solid lightGrey'}}>
-                              <Avatar 
-                                src={element.avatar}
-                              />
-                              <p>
-                                {element.username}
-                              </p>
-                              <p className={classes.helper}>
-                                {formatDate(element.created_at)}
-                              </p>
-                              <p>
-                                {element.comment}
-                              </p>
-                            </div>
-                          )
-                        }
-                      })}
-                    </div>}
+                    <Comments />
                   </ExpansionPanelDetails>
                 </ExpansionPanel>
               </CardContent>

@@ -365,6 +365,24 @@ export const createComment = (postid, comment) => dispatch => {
     })
 }
 
+export const editComment = (commentid, comment) => dispatch => {
+
+  axiosWithAuth()
+    .put(`/comments/${commentid}`, comment)
+    .then(response => {
+      console.log(response)
+    })
+}
+
+export const deleteComment = (commentid) => dispatch => {
+
+  axiosWithAuth()
+    .delete(`/comments/${commentid}`)
+    .then(response => {
+      console.log(response)
+    })
+}
+
 export const createPost = () => dispatch => {
   
 }
