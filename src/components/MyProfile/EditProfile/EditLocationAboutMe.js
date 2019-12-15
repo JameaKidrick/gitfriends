@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 // ACTIONS
-import { getUserProfile, check, editProfile, } from '../../../actions';
+import { getUserProfile, check, editProfile, getUser } from '../../../actions';
 
 // STYLES
 import { TextField } from '@material-ui/core';
 
 const EditLocationAndAboutMe = (props) => {
-  const userid = localStorage.getItem("userid");
-  const profileid = localStorage.getItem("profileid");
+  const currentUser = useSelector(state => state.user);
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [location, setLocation] = useState('');
@@ -17,10 +16,14 @@ const EditLocationAndAboutMe = (props) => {
   const [updateProfile, setUpdateProfile] = useState();
 
   useEffect(() => {
-    props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    props.getUserProfile(currentUser.userid, setProfile, setUser);
+  }, [currentUser])
 
   useEffect(() => {
     setUpdateProfile({location:`${location}`, about_me:`${aboutMe}`})
@@ -45,7 +48,7 @@ const EditLocationAndAboutMe = (props) => {
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.editProfile(profileid, updateProfile, props.history);
+    props.editProfile(currentUser.profileid, updateProfile, props.history);
   }
 
   return(
@@ -76,4 +79,5 @@ export default connect(null, {
   getUserProfile,
   check,
   editProfile,
+  getUser
 })(EditLocationAndAboutMe);

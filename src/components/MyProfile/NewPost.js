@@ -26,8 +26,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NewPostModal = (props) => {
-  const userid = Number(localStorage.getItem('userid'));
+  // STYLES
   const classes = useStyles();
+
   const [open, setOpen] = useState(false);
   const [post, setPost] = useState({});
 

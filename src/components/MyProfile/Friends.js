@@ -2,19 +2,21 @@ import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 
 // ACTIONS
-import { check, getUsersFriends, deleteFriend } from '../../actions';
+import { check, getUsersFriends, deleteFriend, getUser } from '../../actions';
 import { Avatar } from '@material-ui/core';
 
 const FriendsList = (props) => {
+  const currentUser = useSelector(state => state.user);
   const friends = useSelector(state => state.friends);
-  const userid = Number(localStorage.getItem('userid'));
+  const userid = currentUser.userid;
 
   useEffect(() => {
     props.check();
-    props.getUsersFriends(userid);
   }, [])
-
-  console.log(friends)
+  
+  useEffect(() => {
+    props.getUsersFriends(userid);
+  }, [currentUser])
 
   return(
     <div className='friendsListContainer'>
@@ -43,5 +45,5 @@ const FriendsList = (props) => {
 }
 
 export default connect(null, 
-  { check, getUsersFriends, deleteFriend }
+  { check, getUsersFriends, deleteFriend, getUser }
 )(FriendsList);

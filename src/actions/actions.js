@@ -7,7 +7,9 @@ export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const CHECK_SUCCESS = "CHECK_SUCCESS";
 export const CHECK_FAILURE = "CHECK_FAILURE";
+export const ALERT_SUCCESS = "ALERT_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const FETCHUSER_SUCCESS = "FETCHUSER_SUCCESS";
 export const FETCHUSERS_SUCCESS = "FETCHUSERS_SUCCESS";
 export const FETCHPROFILES_SUCCESS = "FETCHPROFILES_SUCCESS";
 export const PROFILECREATED_SUCCESS = "PROFILECREATED_SUCCESS";
@@ -36,6 +38,18 @@ export const EDITPOST_SUCCESS = "EDITPOST_SUCCESS";
 export const DELETEPOST_SUCCESS = "DELETEPOST_SUCCESS";
 
 // ACTION CREATORS
+export const getUser = () => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get("/users/user")
+    .then(response => {
+      dispatch({ type: FETCHUSER_SUCCESS, payload: response.data });
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
 export const getAllUsers = () => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
@@ -56,26 +70,20 @@ export const getAllProfilesWithUsers = () => dispatch => {
       dispatch({ type: FETCHPROFILES_SUCCESS, payload: response.data });
     })
     .catch(error => {
-      console.log(error);
       dispatch({ type: FETCH_FAILURE, payload: error });
     });
 };
 
 export const registerUser = (data, history) => dispatch => {
-  console.log("MADE IT TO ACTION");
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .post("/auth/register", data)
     .then(response => {
       dispatch({ type: REGISTER_SUCCESS });
-      console.log("RESPONSE", response);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userid", response.data.userid);
-      localStorage.setItem("username", response.data.username);
+      localStorage.setItem('token', response.data.token);
       history.push(`/register/${response.data.id}/createprofile`);
     })
     .catch(error => {
-      console.log("ERROR", error.response.data.error);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data });
     });
 };
@@ -86,33 +94,38 @@ export const loginUser = (credentials, history) => dispatch => {
     .post("/auth/login", credentials)
     .then(response => {
       dispatch({ type: LOGIN_SUCCESS });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userid", response.data.userid);
-      localStorage.setItem("username", response.data.username);
-      localStorage.setItem("profileid", response.data.profileid);
+      localStorage.setItem('token', response.data.token);
       history.push("/");
     })
     .catch(error => {
-      console.log(error.response);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
 
 export const check = () => dispatch => {
-  if (localStorage.getItem("token")) {
+  if(localStorage.getItem('token')) {
     dispatch({ type: CHECK_SUCCESS });
   } else {
     dispatch({ type: CHECK_FAILURE });
   }
 };
 
+export const alerts = () => dispatch => {
+  // axiosWithAuth()
+  //   .get()
+  //   .then(response => {
+  //     console.log('alerts', response.data)
+  //     localStorage.setItem('alerts', response.data.length)
+  //     if(localStorage.getItem('alerts') > 0){
+  //       dispatch({ type: ALERT_SUCCESS });
+  //     }
+  //   })
+}
+
 export const logoutUser = () => dispatch => {
   dispatch({ type: START_FETCHING });
   dispatch({ type: LOGOUT_SUCCESS });
-  localStorage.removeItem("token");
-  localStorage.removeItem("userid");
-  localStorage.removeItem("username");
-  localStorage.removeItem("profileid");
+  localStorage.removeItem('token');
 };
 
 export const createProfile = (id, profile, history) => dispatch => {
@@ -121,11 +134,9 @@ export const createProfile = (id, profile, history) => dispatch => {
     .post(`/users/${id}/profile`, profile)
     .then(response => {
       dispatch({ type: PROFILECREATED_SUCCESS });
-      localStorage.setItem("profileid", response.data.profile_id);
       history.push(`/register/${id}/createprofile2`);
     })
     .catch(error => {
-      console.log(error.response);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -138,7 +149,6 @@ export const getLanguages = () => dispatch => {
       dispatch({ type: FETCHLANGUAGES_SUCCESS, payload: response.data });
     })
     .catch(error => {
-      console.log(error.response.data.error);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -153,7 +163,6 @@ export const addFaveLanguages = (id, fave, history) => dispatch => {
         history.push(`/myprofile/${id}`);
       })
       .catch(error => {
-        console.log(error.response.data.error);
         dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
       });
   });
@@ -169,7 +178,6 @@ export const getUserProfile = (id, setProfile, setUser) => dispatch => {
       setUser(response.data.user);
     })
     .catch(error => {
-      console.log(error.response.data.error);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -182,7 +190,6 @@ export const editProfile = (profileId, info) => dispatch => {
       dispatch({ type: EDITPROFILE_SUCCESS, payload: response.data });
     })
     .catch(error => {
-      console.log(error.response.data.error);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -195,7 +202,6 @@ export const getUserLanguages = profileid => dispatch => {
       dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data });
     })
     .catch(error => {
-      console.log(error.response.data.error);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -209,7 +215,6 @@ export const editUserLanguages = (profileid, fave, history) => dispatch => {
         dispatch({ type: EDITFAVELANGUAGES_SUCCESS, payload: response.data });
       })
       .catch(error => {
-        console.log(error.response.data.error);
         dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
       });
   });
@@ -224,7 +229,6 @@ export const editUser = (userid, info, history) => dispatch => {
       dispatch({ type: EDITUSER_SUCCESS, payload: response.data })
     })
     .catch(error => {
-      console.log(error.response);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -234,15 +238,10 @@ export const deleteUser = (userid, history) => dispatch => {
   axiosWithAuth()
     .delete(`/users/${userid}`)
     .then(response => {
-      console.log(response, history);
       localStorage.removeItem("token");
-      localStorage.removeItem("userid");
-      localStorage.removeItem("username");
-      localStorage.removeItem("profileid");
       history.push("/");
     })
     .catch(error => {
-      console.log(error);
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
@@ -254,8 +253,7 @@ export const getFriendRequests = (userid) => dispatch => {
     .then(response => {
       dispatch({ type: FETCHFRIENDREQUESTS_SUCCESS, payload: response.data })
     })
-    .catch(error => {
-      console.log(error);
+    .catch(error => { 
       dispatch({ type: FETCH_FAILURE, payload: error });
     });
 }
@@ -268,7 +266,6 @@ export const respondToFriendRequest = (userid, requestid, decision) => dispatch 
       dispatch({ type: RESPONDTOREQUEST_SUCCESS })
     })
     .catch(error => {
-      console.log(error);
       dispatch({ type: FETCH_FAILURE, payload: error });
     });
 }
@@ -283,7 +280,6 @@ export const findFriendshipStatus = (userid, friendid) => dispatch => {
       dispatch({ type: FETCHFRIENDSTATUSES_SUCCESS, payload: response.data })
     })
     .catch(error => {
-      console.log(error);
       dispatch({ type: FETCH_FAILURE, payload: error });
     });
 }
@@ -296,7 +292,6 @@ export const getUsersFriends = (userid) => dispatch => {
       dispatch({ type: FETCHFRIENDS_SUCCESS, payload: response.data })
     })
     .catch(error => {
-      console.log(error);
       dispatch({ type: FETCH_FAILURE, payload: error });
     });
 }
@@ -345,7 +340,6 @@ export const getUserPosts = (userid) => dispatch => {
       dispatch({ type: FETCHUSERPOSTS_SUCCESS, payload: response.data })
     })
     .catch(error => {
-      console.log(error.response)
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.message });
     });
 }

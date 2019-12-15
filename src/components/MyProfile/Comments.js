@@ -23,8 +23,9 @@ const Comments = (props) => {
   // STYLE
   const classes = useStyles();
   
+  const currentUser = useSelector(state => state.user);
   const comments = useSelector(state => state.postComments);
-  const userid = Number(localStorage.getItem("userid"));
+  // const userid = Number(localStorage.getItem("userid"));
 
   const [expanded2, setExpanded2] = useState(false);
   const [editComment, setEditComment] = useState({});
@@ -33,7 +34,11 @@ const Comments = (props) => {
 
   const sortedComments = comments.sort((a, b) => {
     return a.comment_id - b.comment_id
-  })
+  });
+
+  useEffect(() => {
+    props.getUser()
+  }, [])
 
   const handleEditingState = editPanel => (e, isExpanded) => {
     setExpanded2(isExpanded ? editPanel : false);
@@ -82,7 +87,7 @@ const Comments = (props) => {
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <Avatar src={element.avatar} />
-                    {element.user_id === userid ? (
+                    {element.user_id === currentUser.userid ? (
                       <div
                         style={{
                           width: "15%",

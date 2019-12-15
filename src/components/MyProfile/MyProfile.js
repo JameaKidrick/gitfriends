@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import DeleteProfileModal from './DeleteProfile';
 
 // ACTIONS
-import { getUserProfile, check } from '../../actions';
+import { getUserProfile, check, getUser } from '../../actions';
 
 // STYLE
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,16 +24,21 @@ const MyProfile = (props) => {
   // STYLES
   const classes = useStyles();
 
-  const userid = Number(localStorage.getItem('userid'));
-
+  const currentUser = useSelector(state => state.user);
   const [profile, setProfile] = useState([])
   const [user, setUser] = useState([])
+  const userid = currentUser.userid;
 
   useEffect(() => {
-    props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    props.getUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  
+  useEffect(() => {
+    props.getUserProfile(userid, setProfile, setUser);
+
+  }, [currentUser])
 
   return(
     <div className='myProfileContainer'>
@@ -57,5 +62,5 @@ const MyProfile = (props) => {
 
 export default connect(
   null,
-  { getUserProfile, check }
+  { getUserProfile, check, getUser }
 )(MyProfile);

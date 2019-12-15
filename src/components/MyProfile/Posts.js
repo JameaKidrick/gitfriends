@@ -7,7 +7,7 @@ import NewPost from './NewPost';
 import EditPost from "./EditPost";
 
 // ACTIONS
-import { getUserPosts, getPostComments, createComment } from "../../actions";
+import { getUserPosts, getPostComments, createComment, getUser } from "../../actions";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
@@ -42,9 +42,10 @@ const useStyles = makeStyles(theme => ({
 const Posts = props => {
   // STYLE
   const classes = useStyles();
+
+  const currentUser = useSelector(state => state.user);
   const posts = useSelector(state => state.userPosts);
   const error = useSelector(state => state.error);
-  const userid = Number(localStorage.getItem("userid"));
   const [expanded, setExpanded] = useState(false);
   const [postid, setPostid] = useState(0);
   const [makeComment, setMakeComment] = useState({});
@@ -54,9 +55,13 @@ const Posts = props => {
   })
 
   useEffect(() => {
-    props.getUserPosts(userid);
+    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  
+  useEffect(() => {
+    props.getUserPosts(currentUser.userid);
+  }, [currentUser])
 
   useEffect(() => {
     if(expanded){
@@ -163,5 +168,5 @@ const Posts = props => {
 };
 
 export default connect(null, 
-  { getUserPosts, getPostComments, createComment }
+  { getUserPosts, getPostComments, createComment, getUser }
 )(Posts);

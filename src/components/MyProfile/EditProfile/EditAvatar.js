@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { avatarList } from "../../CreateProfile/AvatarList";
 
 // ACTIONS
 import {
   getUserProfile,
   check,
-  editProfile
+  editProfile, 
+  getUser
 } from "../../../actions";
 
 // STYLES
@@ -25,18 +26,21 @@ const EditAvatar = (props) => {
   const classes = useStyles();
 
   // FORM CODE
-  const userid = localStorage.getItem("userid");
-  const profileid = localStorage.getItem("profileid");
+  const currentUser = useSelector(state => state.user);
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [choice, setChoice] = useState();
   const [updateProfile, setUpdateProfile] = useState();
 
   useEffect(() => {
-    props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    props.getUserProfile(currentUser.userid, setProfile, setUser);
+  }, [currentUser])
 
   useEffect(() => {
     setUpdateProfile({
@@ -52,7 +56,7 @@ const EditAvatar = (props) => {
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.editProfile(profileid, updateProfile, props.history);
+    props.editProfile(currentUser.profileid, updateProfile, props.history);
   };
 
   return(
@@ -94,5 +98,6 @@ const EditAvatar = (props) => {
 export default connect(null, {
   getUserProfile,
   check,
-  editProfile
+  editProfile,
+  getUser
 })(EditAvatar);

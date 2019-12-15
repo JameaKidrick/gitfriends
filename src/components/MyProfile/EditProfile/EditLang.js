@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // ACTIONS
-import { getLanguages, getUserLanguages, editUserLanguages, check } from '../../../actions';
+import { getLanguages, getUserLanguages, editUserLanguages, check, getUser } from '../../../actions';
 
 // STYLES
 import Favorite from '@material-ui/icons/Favorite';
@@ -13,10 +13,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 const FaveLanguage = (props) => {
+  const currentUser = useSelector(state => state.user);
   const languages = useSelector(state => state.languages);
   const userLanguages = useSelector(state => state.userLanguages);
 
-  const profileid = Number(localStorage.getItem('profileid'));
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [dislikes2, setDislikes2] = useState([]);
@@ -24,10 +24,13 @@ const FaveLanguage = (props) => {
 
   useEffect(() => {
     props.getLanguages();
-    props.getUserLanguages(profileid);
     props.check();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    props.getUserLanguages(currentUser.profileid);
+  }, [currentUser])
 
   useEffect(() => {
     setLikes(userLanguages)
@@ -40,7 +43,6 @@ const FaveLanguage = (props) => {
       return dislikes.splice(item.language_id-(fullArray-dislikes.length), 1)
     })
     setDislikes2(dislikes)
-    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [likes])
 
@@ -74,7 +76,7 @@ const FaveLanguage = (props) => {
   
   const handleSubmit = e => {
     e.preventDefault();
-    props.editUserLanguages(profileid, fave, props.history);
+    props.editUserLanguages(currentUser.profileid, fave, props.history);
   }
 
   return(
@@ -124,5 +126,5 @@ const FaveLanguage = (props) => {
 
 export default connect(
   null,
-  { getLanguages, getUserLanguages, editUserLanguages, check }
+  { getLanguages, getUserLanguages, editUserLanguages, check, getUser }
 )(FaveLanguage);

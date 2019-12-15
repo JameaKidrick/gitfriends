@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -7,7 +7,7 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 
 // ACTIONS
-import { deleteUser } from '../../actions';
+import { deleteUser, getUser } from '../../actions';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -24,9 +24,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DeleteProfileModal = (props) => {
-  const userid = Number(localStorage.getItem('userid'));
+  // const userid = Number(localStorage.getItem('userid'));
+  // STYLES
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+
+  const currentUser = useSelector(state => state.user);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    props.getUser();
+  }, []);
 
   const handleOpen = () => {
     setOpen(true);
@@ -41,7 +48,7 @@ const DeleteProfileModal = (props) => {
   }
 
   const deleteProfile = () => {
-    props.deleteUser(userid, props.history)
+    props.deleteUser(currentUser.userid, props.history)
   }
 
   return (
@@ -75,5 +82,5 @@ const DeleteProfileModal = (props) => {
 
 export default connect(
   null,
-  { deleteUser }
+  { deleteUser, getUser }
 )(DeleteProfileModal);

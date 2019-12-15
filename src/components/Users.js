@@ -14,40 +14,34 @@ import { Link } from 'react-router-dom';
 // import I from '../images/8.jpg';
 
 // ACTIONS
-import { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends, sendFriendRequest } from '../actions';
+import { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends, sendFriendRequest, getUser } from '../actions';
 
 const Users = (props) => {
+  const currentUser = useSelector(state => state.user);
   const isFetching = useSelector(state => state.isFetching);
   const profiles = useSelector(state => state.profiles);
   const friends = useSelector(state => state.friends);
-  const userid = Number(localStorage.getItem('userid'));
-
-  const [allFriends, setAllFriends] = useState([])
+  const userid = currentUser.userid;
 
   useEffect(() => {
     props.getAllProfilesWithUsers();
     props.check();
-    props.getUsersFriends(userid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  
+  useEffect(() => {
+    props.getUsersFriends(userid);
+  }, [currentUser])
 
   useEffect(() => {
     let friendsList = friends.filter(element => {
       return element.user2_id !== userid
     })
-    console.log(friendsList)
   }, [friends])
-  
-  // GET ARRAY OF USER'S FRIENDS' IDS
-  // WITHIN THE RETURN, IF ITEM.USER_ID IS WITHIN ARRAY RETURN TRUE/SHOW FRIEND BUTTON OTHERWISE SHOW ADD FRIEND BUTTON
 
   const sortedProfiles = profiles.sort((a, b) => {
     return a.user_id - b.user_id
   })
-
-  console.log(friends)
-  
-  console.log(allFriends)
 
   if(isFetching){
     return(
@@ -58,8 +52,7 @@ const Users = (props) => {
       </div>
     )
   }
-// INFINITE LOOP ALERT
-// FIGURE OUT HOW TO FIND THE FRIENDSHIP STATUS PER USER AND ADD CORRESPONDING BUTTON
+
   return(
     <div style={{border:'1px solid black', display:'flex', flexWrap:'wrap'}}>
       {sortedProfiles.map((item, index)=> {
@@ -86,7 +79,5 @@ const Users = (props) => {
 
 export default connect(
   null,
-  { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends, sendFriendRequest }
+  { getAllProfilesWithUsers, check, findFriendshipStatus, getUsersFriends, sendFriendRequest, getUser }
 )(Users);
-
-// console.log('2', item.user_id)

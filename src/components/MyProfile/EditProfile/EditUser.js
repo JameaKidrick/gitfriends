@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import useForm from "react-hook-form";
 
 // ACTIONS
-import { editUser }from '../../../actions';
+import { editUser, getUser }from '../../../actions';
 
 // STYLE
 import { TextField } from '@material-ui/core';
@@ -12,9 +12,9 @@ import Button from '@material-ui/core/Button';
 
 const EditUser = (props) => {
   let { register, handleSubmit, errors, clearError} = useForm();
+  const currentUser = useSelector(state => state.user);
   const isFetching = useSelector(state => state.isFetching);
   const error = useSelector(state => state.error);
-  const userid = Number(localStorage.getItem('userid'));
 
   const [user, setUser] = useState();
   const [username, setUsername] = useState();
@@ -23,6 +23,10 @@ const EditUser = (props) => {
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
   const [email, setEmail] = useState();
+
+  useEffect(() => {
+    props.getUser();
+  }, [])
   
   useEffect(() => {
     setUser({ 
@@ -72,8 +76,7 @@ const EditUser = (props) => {
     // e.persist()
     // validateForm()
     // props.registerUser(data, props.history)
-    console.log('DATA', user)
-    props.editUser(userid, user, props.history)
+    props.editUser(currentUser.userid, user, props.history)
   }
 
   if(isFetching){
@@ -139,5 +142,6 @@ const EditUser = (props) => {
 }
 
 export default connect(null, { 
-  editUser
+  editUser,
+  getUser
 })(EditUser);

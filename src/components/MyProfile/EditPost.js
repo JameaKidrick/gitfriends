@@ -27,7 +27,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditPostModal = (props) => {
-  const userid = Number(localStorage.getItem('userid'));
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [post, setPost] = useState({});

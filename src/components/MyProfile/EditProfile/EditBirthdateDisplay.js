@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 // ACTIONS
 import {
   getUserProfile,
   check,
-  editProfile
+  editProfile,
+  getUser
 } from "../../../actions";
 
 // STYLES
@@ -29,8 +30,9 @@ const ColoredRadio = withStyles({
 const EditBirthdate = (props) => {
 
   // FORM CODE
-  const userid = localStorage.getItem("userid");
-  const profileid = localStorage.getItem("profileid");
+  // const userid = localStorage.getItem("userid");
+  // const profileid = localStorage.getItem("profileid");
+  const currentUser = useSelector(state => state.user);
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [DOB, setDOB] = useState(new Date());
@@ -80,14 +82,20 @@ const EditBirthdate = (props) => {
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.editProfile(profileid, updateProfile, props.history);
+    props.editProfile(currentUser.profileid, updateProfile, props.history);
   };
 
   useEffect(() => {
-    props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    props.getUserProfile(currentUser.userid, setProfile, setUser);
+  }, [currentUser])
+
+  console.log(currentUser)
 
   useEffect(() => {
     setUpdateProfile({
@@ -169,5 +177,6 @@ const EditBirthdate = (props) => {
 export default connect(null, {
   getUserProfile,
   check,
-  editProfile
+  editProfile,
+  getUser
 })(EditBirthdate);

@@ -3,21 +3,25 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // ACTIONS
-import { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest } from '../../actions';
+import { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest, getUser } from '../../actions';
 
 // STYLE
 import Avatar from '@material-ui/core/Avatar';
 
 const FriendRequests = (props) => {
-  const userid = Number(localStorage.getItem('userid'));
+  const currentUser = useSelector(state => state.user);
   const requests = useSelector(state => state.requests);
-  // const [request, setRequest] = useState([])
-  useEffect(() => {
-    props.getFriendRequests(userid)
-    props.check()
-  }, [])
+  const userid = currentUser.userid;
 
-  console.log(requests)
+  useEffect(() => {
+    props.check();
+    props.getUser();
+  }, [])
+  
+  useEffect(() => {
+    props.getFriendRequests(currentUser.userid);
+  }, [currentUser])
+
   const acceptRequest = (requestid) => {
     props.respondToFriendRequest(userid, requestid, {request_status: 2})
   }
@@ -84,5 +88,5 @@ const FriendRequests = (props) => {
 
 export default connect(
   null,
-  { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest }
+  { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest, getUser }
 )(FriendRequests);

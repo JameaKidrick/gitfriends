@@ -20,16 +20,23 @@ import FriendRequests from "./components/MyProfile/FriendRequests";
 import FriendsList from './components/MyProfile/Friends';
 
 // ACTIONS
-import { logoutUser } from "./actions";
+import { logoutUser, getUser } from "./actions";
+
+// STYLES
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 
 function App(props) {
   const [userid, setUserid] = useState(0);
+  const currentUser = useSelector(state => state.user);
   const loggedIn = useSelector(state => state.loggedIn);
-  // console.log(userid, typeof(userid))
 
   useEffect(() => {
-    setUserid(Number(localStorage.getItem("userid")));
+    props.getUser();
   }, []);
+
+  useEffect(() => {
+    setUserid(currentUser.userid);
+  }, [currentUser]);
 
   const logOut = () => {
     props.logoutUser();
@@ -136,4 +143,4 @@ function App(props) {
   );
 }
 
-export default connect(null, { logoutUser })(App);
+export default connect(null, { logoutUser, getUser })(App);
