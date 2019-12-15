@@ -27,6 +27,13 @@ export const SENDFRIENDREQUEST_SUCCESS = "SENDFRIENDREQUEST_SUCCESS";
 export const DELETEFRIENDREQUEST_SUCCESS = "DELETEFRIENDREQUEST_SUCCESS";
 export const FETCHUSERPOSTS_SUCCESS = "FETCHUSERPOSTS_SUCCESS";
 export const FETCHPOSTCOMMENTS_SUCCESS = "FETCHPOSTCOMMENTS_SUCCESS";
+export const CREATECOMMENT_SUCCESS = "CREATECOMMENT_SUCCESS";
+export const EDITCOMMENT_SUCCESS = "EDITCOMMENT_SUCCESS";
+export const DELETECOMMENT_SUCCESS = "DELETECOMMENT_SUCCESS";
+export const FETCHPOST_SUCCESS = "FETCHPOST_SUCCESS";
+export const CREATEPOST_SUCCESS = "CREATEPOST_SUCCESS";
+export const EDITPOST_SUCCESS = "EDITPOST_SUCCESS";
+export const DELETEPOST_SUCCESS = "DELETEPOST_SUCCESS";
 
 // ACTION CREATORS
 export const getAllUsers = () => dispatch => {
@@ -335,7 +342,6 @@ export const getUserPosts = (userid) => dispatch => {
   axiosWithAuth()
     .get(`/users/${userid}/posts`)
     .then(response => {
-      console.log(response.data)
       dispatch({ type: FETCHUSERPOSTS_SUCCESS, payload: response.data })
     })
     .catch(error => {
@@ -348,7 +354,6 @@ export const getPostComments = (postid) => dispatch => {
   axiosWithAuth()
     .get(`/posts/${postid}/comments`)
     .then(response => {
-      console.log(response.data)
       dispatch({ type: FETCHPOSTCOMMENTS_SUCCESS, payload: response.data })
     })
     .catch(error => {
@@ -357,32 +362,86 @@ export const getPostComments = (postid) => dispatch => {
 }
 
 export const createComment = (postid, comment) => dispatch => {
-
+  dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .post(`/posts/${postid}/comments`, comment)
     .then(response => {
-      console.log(response)
+      dispatch({ type: CREATECOMMENT_SUCCESS, payload: response.data })
     })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
 }
 
 export const editComment = (commentid, comment) => dispatch => {
-
+  dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .put(`/comments/${commentid}`, comment)
     .then(response => {
-      console.log(response)
+      dispatch({ type: EDITCOMMENT_SUCCESS, payload: response.data })
     })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
 }
 
 export const deleteComment = (commentid) => dispatch => {
-
+  dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .delete(`/comments/${commentid}`)
     .then(response => {
-      console.log(response)
+      dispatch({ type: DELETECOMMENT_SUCCESS, payload: response.data })
     })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
 }
 
-export const createPost = () => dispatch => {
-  
+export const getSpecificPost = (postid, setPost) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get(`/posts/${postid}`)
+    .then(response => {
+      setPost(response.data)
+      dispatch({ type: FETCHPOST_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
+export const createPost = (post) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .post(`posts`, post)
+    .then(response => {
+      dispatch({ type: CREATEPOST_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
+export const editPost = (postid, post) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .put(`/posts/${postid}`, post)
+    .then(response => {
+      dispatch({ type: EDITPOST_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
+export const deletePost = (postid) => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .delete(`/posts/${postid}`)
+    .then(response => {
+      dispatch({ type: DELETEPOST_SUCCESS, payload: response.data })
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
 }

@@ -3,6 +3,8 @@ import { connect, useSelector } from "react-redux";
 
 // COMPONENTS
 import Comments from './Comments';
+import NewPost from './NewPost';
+import EditPost from "./EditPost";
 
 // ACTIONS
 import { getUserPosts, getPostComments, createComment } from "../../actions";
@@ -18,6 +20,7 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import { TextField, Button } from "@material-ui/core";
+import DeletePost from "./DeletePost";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,6 +49,9 @@ const Posts = props => {
   const [postid, setPostid] = useState(0);
   const [makeComment, setMakeComment] = useState({});
 
+  const sortedPosts = posts.sort((a, b) => {
+    return b.post_id - a.post_id
+  })
 
   useEffect(() => {
     props.getUserPosts(userid);
@@ -67,12 +73,11 @@ const Posts = props => {
     setPostid(Number(e.target.name))
   };
 
-  const handleSubmit = e => {
+  const handleCommentSubmit = e => {
     e.preventDefault()
     props.createComment(postid, makeComment)
     props.getPostComments(postid)
   };
-
   
   const formatDate = (date) => {
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -89,62 +94,67 @@ const Posts = props => {
 
   return (
     <div className="postsContainer">
-      <Card>
-        {posts.map((item, postIndex) => {
-          return (
-            <div
-              key={postIndex}
-              style={{
-                border: "2px solid black",
-                width: "50%",
-                margin: "0 auto"
-              }}
-            >
+      <NewPost />
+      {sortedPosts.map((item, postIndex) => {
+        return (
+          <div
+            key={postIndex}
+            style={{
+              border: "2px solid black",
+              width: "50%",
+              margin: "0 auto"
+            }}
+          >
+            <div style={{display:'flex', justifyContent:'space-between'}}>
               <CardHeader title={item.title} subheader={`published: ${formatDate(item.created_at)}`} />
-              <CardContent>
-                <Typography className={classes.secondaryHeading}>
-                  {item.post}
-                </Typography>
-                <br />
-                <form onSubmit={handleSubmit}>
-                  <TextField 
-                    placeholder='make a comment'
-                    variant='outlined'
-                    fullWidth
-                    onChange={handleCommentChange}
-                    name={item.post_id}
-                  />
-                  <Button type='submit'>submit</Button>
-                </form>
-                <ExpansionPanel
-                  expanded={expanded === `panel${item.post_id}`}
-                  onChange={handleChange(`panel${item.post_id}`)}
-                >
-                  <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                  >
-                    {!(expanded === `panel${item.post_id}`) && (
-                      <Typography className={classes.normalText}>
-                        see comments
-                      </Typography>
-                    )}
-                    {expanded === `panel${item.post_id}` && (
-                      <Typography className={classes.normalText}>
-                        hide comments
-                      </Typography>
-                    )}
-                  </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
-                    <Comments />
-                  </ExpansionPanelDetails>
-                </ExpansionPanel>
-              </CardContent>
+              <div style={{display:'flex', justifyContent:'space-between'}}>
+                <EditPost postid={item.post_id} />
+                <DeletePost postid={item.post_id} />
+              </div>
             </div>
-          );
-        })}
-      </Card>
+            <CardContent>
+              <Typography className={classes.secondaryHeading}>
+                {item.post}
+              </Typography>
+              <br />
+              <form onSubmit={handleCommentSubmit}>
+                <TextField 
+                  placeholder='make a comment'
+                  variant='outlined'
+                  fullWidth
+                  onChange={handleCommentChange}
+                  name={item.post_id}
+                />
+                <Button type='submit'>submit</Button>
+              </form>
+              <ExpansionPanel
+                expanded={expanded === `panel${item.post_id}`}
+                onChange={handleChange(`panel${item.post_id}`)}
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1bh-content"
+                  id="panel1bh-header"
+                >
+                  {!(expanded === `panel${item.post_id}`) && (
+                    <Typography className={classes.normalText}>
+                      see comments
+                    </Typography>
+                  )}
+                  {expanded === `panel${item.post_id}` && (
+                    <Typography className={classes.normalText}>
+                      hide comments
+                    </Typography>
+                  )}
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Comments />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </CardContent>
+          </div>
+        );
+      })}
     </div>
   );
 };

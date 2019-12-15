@@ -1,0 +1,110 @@
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+
+// ACTIONS
+import { getSpecificPost, editPost } from '../../actions';
+
+// STYLES
+import { TextField, Button, Typography } from "@material-ui/core";
+import EditIcon from '@material-ui/icons/Edit';
+
+const useStyles = makeStyles(theme => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
+const EditPostModal = (props) => {
+  const userid = Number(localStorage.getItem('userid'));
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [post, setPost] = useState({});
+  const [editPost, setEditPost] = useState({})
+
+  const handleOpen = () => {
+    props.getSpecificPost(props.postid, setPost)
+    setOpen(true);
+  };
+
+  console.log(post)
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  
+  const handlePostChange = e => {
+    setEditPost({ ...editPost, [e.target.name]:e.target.value })
+  }
+
+  const handlePostSubmit = e => {
+    props.editPost(props.postid, editPost)
+  }
+
+  const cancelModal = () => {
+    setEditPost({})
+    setOpen(false)
+  }
+
+  return (
+    <div>
+      <EditIcon type="button" onClick={()=>handleOpen()} variant='contained'>
+        create a new post
+      </EditIcon>
+      <Modal
+        aria-labelledby="edit-post-modal-title"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+          <form onSubmit={handlePostSubmit}>
+            <Typography variant='h5'>edit post</Typography>
+            <TextField
+              name='title'
+              fullWidth
+              variant='outlined'
+              placeholder={post.title}
+              onChange={handlePostChange}
+            />
+            <TextField
+              name='post'
+              fullWidth
+              multiline
+              rows="4"
+              variant='outlined'
+              placeholder={post.post}
+              onChange={handlePostChange}
+            />
+            <Button type='submit' variant='contained'>edit post</Button>
+            <Button type='button' variant='contained' onClick={()=>cancelModal()}>cancel</Button>
+          </form>
+          </div>
+        </Fade>
+      </Modal>
+    </div>
+  );
+}
+
+export default connect(
+  null,
+  { getSpecificPost, editPost }
+)(EditPostModal);
