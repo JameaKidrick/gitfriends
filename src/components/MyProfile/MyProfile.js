@@ -6,12 +6,13 @@ import { Link } from 'react-router-dom';
 import DeleteProfileModal from './DeleteProfile';
 
 // ACTIONS
-import { getUserProfile, check, getUser } from '../../actions';
+import { getUserProfile, check, getUser, getUserLanguages } from '../../actions';
 
 // STYLE
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Posts from './Posts';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -25,20 +26,23 @@ const MyProfile = (props) => {
   const classes = useStyles();
 
   const currentUser = useSelector(state => state.user);
+  const userLanguages = useSelector(state => state.userLanguages);
   const [profile, setProfile] = useState([])
   const [user, setUser] = useState([])
   const userid = currentUser.userid;
 
   useEffect(() => {
     props.check();
-    props.getUser()
+    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   useEffect(() => {
     props.getUserProfile(userid, setProfile, setUser);
-
+    props.getUserLanguages(currentUser.profileid);
   }, [currentUser])
+
+  console.log('USERLANGUAGES', userLanguages)
 
   return(
     <div className='myProfileContainer'>
@@ -55,6 +59,16 @@ const MyProfile = (props) => {
       <Link to={`/myprofile/${userid}/editprofile`}><button>edit profile</button></Link>
       <DeleteProfileModal history={props.history} />
       <br />
+      <ul>
+        <Typography variant='h6'>favorite languages</Typography>
+        {userLanguages.map((item, index) => {
+          return(
+            <li key={index}>
+              {item.language}
+            </li>
+          )
+        })}
+      </ul>
       <Posts />
     </div>
   )
@@ -62,5 +76,5 @@ const MyProfile = (props) => {
 
 export default connect(
   null,
-  { getUserProfile, check, getUser }
+  { getUserProfile, check, getUser, getUserLanguages }
 )(MyProfile);

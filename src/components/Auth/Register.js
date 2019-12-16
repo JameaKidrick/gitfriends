@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import 'date-fns';
 import { connect, useSelector } from 'react-redux';
 import useForm from "react-hook-form";
 
@@ -6,31 +7,42 @@ import useForm from "react-hook-form";
 import { registerUser }from '../../actions';
 
 // STYLE
-import { TextField } from '@material-ui/core';
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Button from '@material-ui/core/Button';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import { TextField, FormHelperText, Button, makeStyles, Typography } from '@material-ui/core';
+import { css } from '@emotion/core';
+import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';
 
+const useStyles = makeStyles(theme => ({
+  input: {
+    margin: '1% auto',
+    width: '50%'
+  }
+}));
+
+const override = css`
+  display: block;
+  margin: 20% auto;
+  border-color: red;
+`;
 
 const Register = (props) => {
+  // STYLE
+  const classes = useStyles();
+
   let { register, handleSubmit, errors, clearError} = useForm();
   const isFetching = useSelector(state => state.isFetching);
   const error = useSelector(state => state.error);
 
-  const handleUsernameChange = e => {
-    return clearError("username")
-  }
+  const [selectedDate, setSelectedDate] = useState();
+  const [credentials, setCredentials] = useState({});
 
-  const handleEmailChange = e => {
-    return clearError("email")
-  }
-
-  // const validateForm= e => {
-  //   if(error.error){
-  //     setError('username', 'please try again')
-  //   }else{
-  //     return true
-  //   }
-  // }
+  const handleDateChange = date => {
+    setSelectedDate(date);
+  };
 
   const handleFormSubmit = (data, e)=> {
     // e.preventDefault()
@@ -38,34 +50,32 @@ const Register = (props) => {
     // validateForm()
     props.registerUser(data, props.history)
     console.log('DATA', data)
+    if(error){
+      setCredentials(data)
+    }
   }
-
-  // OPTIMIZING FORM:
-    // SHOW USERNAME/EMAIL TAKEN BEFORE SUBMITTING FORM
-    // OR
-    // SHOW USERNAME/EMAIL TAKEN AFTER SUBMITTING FORM WITHOUT ERASING INFO ALREADY IN FORM
 
   if(isFetching){
     return(
-      <div>
-        <h2>
-          Loading...
-        </h2>
-      </div>
+      <ClimbingBoxLoader 
+        css={override}
+      />
     )
   }
 
   return(
     <div>
-      Hello RegisterPage!
       <br />
       <form onSubmit={handleSubmit(handleFormSubmit)} style={{display:'flex', flexDirection:'column'}}>
+      <Typography variant='h5'>register</Typography>
+      <FormHelperText error>required = *</FormHelperText>
         <TextField 
           label='username*'
           name='username'
-          onChange={handleUsernameChange}
           variant='outlined'
+          defaultValue={credentials.username}
           inputRef={register({ required:true })}
+          className={classes.input}
           />
         {errors.username && errors.username.type === "required" && (
           <FormHelperText error>username is required</FormHelperText>
@@ -75,65 +85,84 @@ const Register = (props) => {
         )}
 
         <TextField
-          label='password'
+          label='password*'
           type='password'
           name='password'
           variant='outlined'
+          defaultValue={credentials.password}
           inputRef={register({ required:true })}
+          className={classes.input}
         />
         {errors.password && errors.password.type === "required" && (
           <FormHelperText error>password is required</FormHelperText>
         )}
 
         <TextField
-          label='first name'
+          label='first name*'
           type='text'
           name='first_name'
           variant='outlined'
+          defaultValue={credentials.first_name}
           inputRef={register({ required:true })}
+          className={classes.input}
         />
         {errors.first_name && errors.first_name.type === "required" && (
           <FormHelperText error>first name is required</FormHelperText>
         )}
 
         <TextField
-          label='last name'
+          label='last name*'
           type='text'
           name='last_name'
           variant='outlined'
+          defaultValue={credentials.last_name}
           inputRef={register({ required:true })}
+          className={classes.input}
         />
         {errors.last_name && errors.last_name.type === "required" && (
           <FormHelperText error>last name is required</FormHelperText>
         )}
 
-        <TextField
-          label='date of birth'
-          type='text'
-          name='date_of_birth'
-          variant='outlined'
-          helperText="format: yyyy-mm-dd"
-          inputRef={register({ required:true })}
-        />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            name='date_of_birth'
+            format="MM/dd/yyyy"
+            label='date of birth*'
+            defaultValue={credentials.date_of_birth}
+            value={selectedDate}
+            onChange={handleDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+            inputRef={register({ required:true })}
+            className={classes.input}
+          />
+        </MuiPickersUtilsProvider>
         {errors.date_of_birth && errors.date_of_birth.type === "required" && (
           <FormHelperText error>date of birth is required</FormHelperText>
         )}
 
         <TextField
-          label='email'
+          label='email*'
           type='text'
           name='email'
-          onChange={handleEmailChange}
           variant='outlined'
-          inputRef={register({ required:true })}
+          defaultValue={credentials.email}
+          inputRef={register({ required:true,
+            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ })}
+          className={classes.input}
           />
           {errors.email && errors.email.type === "required" && (
             <FormHelperText error>email is required</FormHelperText>
           )}
+          {errors.email && errors.email.type === "pattern" && (
+            <FormHelperText error>invalid email format</FormHelperText>
+          )}
           {error.error && error.error === 'Email is already in the database' && (
             <FormHelperText error>this email is already being used</FormHelperText>
           )}
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' style={{margin:'0 auto', width:'50%'}}>Submit</Button>
       </form>
     </div>
   )

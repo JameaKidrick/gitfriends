@@ -20,7 +20,7 @@ import FriendRequests from "./components/MyProfile/FriendRequests";
 import FriendsList from './components/MyProfile/Friends';
 
 // ACTIONS
-import { logoutUser, getUser } from "./actions";
+import { logoutUser, getUserAfterRegister } from "./actions";
 
 // STYLES
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
@@ -31,7 +31,7 @@ function App(props) {
   const loggedIn = useSelector(state => state.loggedIn);
 
   useEffect(() => {
-    props.getUser();
+    props.getUserAfterRegister();
   }, []);
 
   useEffect(() => {
@@ -143,4 +143,4 @@ function App(props) {
   );
 }
 
-export default connect(null, { logoutUser, getUser })(App);
+export default connect(null, { logoutUser, getUserAfterRegister })(App);

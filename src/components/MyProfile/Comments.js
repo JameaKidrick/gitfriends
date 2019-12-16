@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
 
 // ACTIONS
-import { editComment, deleteComment } from "../../actions";
+import { editComment, deleteComment, getUser } from "../../actions";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
@@ -145,5 +145,5 @@ const Comments = (props) => {
 };
 
 export default connect(null,
-  { editComment, deleteComment }
+  { editComment, deleteComment, getUser }
 )(Comments);

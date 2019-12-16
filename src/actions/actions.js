@@ -10,6 +10,7 @@ export const CHECK_FAILURE = "CHECK_FAILURE";
 export const ALERT_SUCCESS = "ALERT_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const FETCHUSER_SUCCESS = "FETCHUSER_SUCCESS";
+export const FETCHUSERWITHOUTPROFILEID_SUCCESS = "FETCHUSERWITHOUTPROFILEID_SUCCESS";
 export const FETCHUSERS_SUCCESS = "FETCHUSERS_SUCCESS";
 export const FETCHPROFILES_SUCCESS = "FETCHPROFILES_SUCCESS";
 export const PROFILECREATED_SUCCESS = "PROFILECREATED_SUCCESS";
@@ -43,7 +44,20 @@ export const getUser = () => dispatch => {
   axiosWithAuth()
     .get("/users/user")
     .then(response => {
+      console.log(response.data)
       dispatch({ type: FETCHUSER_SUCCESS, payload: response.data });
+    })
+    .catch(error => {
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
+    });
+}
+
+export const getUserAfterRegister = () => dispatch => {
+  dispatch({ type: START_FETCHING });
+  axiosWithAuth()
+    .get("/users/create")
+    .then(response => {
+      dispatch({ type: FETCHUSERWITHOUTPROFILEID_SUCCESS, payload: response.data });
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
@@ -80,8 +94,9 @@ export const registerUser = (data, history) => dispatch => {
     .post("/auth/register", data)
     .then(response => {
       dispatch({ type: REGISTER_SUCCESS });
+      console.log(response)
       localStorage.setItem('token', response.data.token);
-      history.push(`/register/${response.data.id}/createprofile`);
+      history.push(`/register/${response.data.userid}/createprofile`);
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data });
@@ -146,6 +161,7 @@ export const getLanguages = () => dispatch => {
   axiosWithAuth()
     .get("/fave")
     .then(response => {
+      console.log(response)
       dispatch({ type: FETCHLANGUAGES_SUCCESS, payload: response.data });
     })
     .catch(error => {
@@ -155,6 +171,7 @@ export const getLanguages = () => dispatch => {
 
 export const addFaveLanguages = (id, fave, history) => dispatch => {
   dispatch({ type: START_FETCHING });
+  console.log('ACTION', id, fave)
   fave.forEach(element => {
     axiosWithAuth()
       .post(`/profiles/${id}/fave`, element)
@@ -196,12 +213,15 @@ export const editProfile = (profileId, info) => dispatch => {
 
 export const getUserLanguages = profileid => dispatch => {
   dispatch({ type: START_FETCHING });
+  console.log(profileid)
   axiosWithAuth()
     .get(`/profiles/${profileid}/fave`)
     .then(response => {
+      console.log('GETUSERLANGUAGES ACTION', response)
       dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data });
     })
     .catch(error => {
+      console.log(error)
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
