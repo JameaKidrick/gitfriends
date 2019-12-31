@@ -32,12 +32,14 @@ const EditPostModal = (props) => {
   const [post, setPost] = useState({});
   const [editPost, setEditPost] = useState({})
 
-  const handleOpen = () => {
+  useEffect(() => {
     props.getSpecificPost(props.postid, setPost)
+
+  }, [open])
+
+  const handleOpen = () => {
     setOpen(true);
   };
-
-  console.log(post)
 
   const handleClose = () => {
     setOpen(false);
@@ -48,7 +50,8 @@ const EditPostModal = (props) => {
   }
 
   const handlePostSubmit = e => {
-    props.editPost(props.postid, editPost)
+    e.preventDefault();
+    props.editPost(props.postid, editPost, setOpen, props.userid);
   }
 
   const cancelModal = () => {
@@ -59,7 +62,6 @@ const EditPostModal = (props) => {
   return (
     <div>
       <EditIcon type="button" onClick={()=>handleOpen()} variant='contained'>
-        create a new post
       </EditIcon>
       <Modal
         aria-labelledby="edit-post-modal-title"
@@ -79,8 +81,9 @@ const EditPostModal = (props) => {
             <TextField
               name='title'
               fullWidth
+              autoFocus
               variant='outlined'
-              placeholder={post.title}
+              defaultValue={post.title}
               onChange={handlePostChange}
             />
             <TextField
@@ -89,7 +92,7 @@ const EditPostModal = (props) => {
               multiline
               rows="4"
               variant='outlined'
-              placeholder={post.post}
+              defaultValue={post.post}
               onChange={handlePostChange}
             />
             <Button type='submit' variant='contained'>edit post</Button>

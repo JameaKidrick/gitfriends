@@ -32,6 +32,8 @@ const EditBirthdate = (props) => {
   // FORM CODE
   // const userid = localStorage.getItem("userid");
   // const profileid = localStorage.getItem("profileid");
+  const success = useSelector(state => state.success);
+  console.log(success)
   const currentUser = useSelector(state => state.user);
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState([]);

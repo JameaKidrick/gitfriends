@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
 // ACTIONS
-import { createPost } from '../../actions';
+import { createPost, getUserPosts } from '../../actions';
 
 // STYLES
 import { TextField, Button, Typography } from "@material-ui/core";
@@ -29,6 +29,8 @@ const NewPostModal = (props) => {
   // STYLES
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [post, setPost] = useState({});
 
@@ -47,7 +49,7 @@ const NewPostModal = (props) => {
 
   const handlePostSubmit = e => {
     e.preventDefault();
-    props.createPost(post);
+    dispatch(createPost(post, setOpen, props.userid));
   }
 
   const cancelModal = () => {
@@ -101,7 +103,4 @@ const NewPostModal = (props) => {
   );
 }
 
-export default connect(
-  null,
-  { createPost }
-)(NewPostModal);
+export default NewPostModal;

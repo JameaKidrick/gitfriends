@@ -4,15 +4,14 @@ import { Link } from 'react-router-dom';
 
 // COMPONENTS
 import DeleteProfileModal from './DeleteProfile';
+import Posts from './Posts';
 
 // ACTIONS
 import { getUserProfile, check, getUser, getUserLanguages } from '../../actions';
 
 // STYLE
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import Posts from './Posts';
-import { Typography } from '@material-ui/core';
+import { Typography, Button, Avatar } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -56,7 +55,7 @@ const MyProfile = (props) => {
       {profile.about_me && (
         <h3>about me: {profile.about_me}</h3>
       )}
-      <Link to={`/myprofile/${userid}/editprofile`}><button>edit profile</button></Link>
+      <Link to={`/myprofile/${userid}/editprofile`}><Button variant='contained'>edit profile</Button></Link>
       <DeleteProfileModal history={props.history} />
       <br />
       <ul>

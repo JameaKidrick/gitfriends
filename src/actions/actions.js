@@ -44,11 +44,12 @@ export const getUser = () => dispatch => {
   axiosWithAuth()
     .get("/users/user")
     .then(response => {
-      console.log('GET USER ACTION', response.data)
       dispatch({ type: FETCHUSER_SUCCESS, payload: response.data });
     })
     .catch(error => {
-      console.log(error)
+      if(304){
+        return false
+      }
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
@@ -197,16 +198,20 @@ export const getUserProfile = (id, setProfile, setUser) => dispatch => {
       setUser(response.data.user);
     })
     .catch(error => {
+      if(304){
+        return false
+      }
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 };
 
-export const editProfile = (profileId, info) => dispatch => {
+export const editProfile = (profileId, info, setCheckSuccess) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .put(`/profiles/${profileId}`, info)
     .then(response => {
       dispatch({ type: EDITPROFILE_SUCCESS, payload: response.data });
+      setCheckSuccess(true)
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
@@ -248,7 +253,6 @@ export const editUser = (userid, info, history) => dispatch => {
   axiosWithAuth()
     .put(`/users/${userid}`, info)
     .then(response => {
-      // console.log(response);
       dispatch({ type: EDITUSER_SUCCESS, payload: response.data })
     })
     .catch(error => {
@@ -277,7 +281,7 @@ export const getFriendRequests = (userid) => dispatch => {
       dispatch({ type: FETCHFRIENDREQUESTS_SUCCESS, payload: response.data })
     })
     .catch(error => { 
-      dispatch({ type: FETCH_FAILURE, payload: error });
+      dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
 
@@ -387,30 +391,34 @@ export const createComment = (postid, comment) => dispatch => {
     .post(`/posts/${postid}/comments`, comment)
     .then(response => {
       dispatch({ type: CREATECOMMENT_SUCCESS, payload: response.data })
+      dispatch(getPostComments(postid))
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
 
-export const editComment = (commentid, comment) => dispatch => {
+export const editComment = (commentid, comment, postid, setExpanded2) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .put(`/comments/${commentid}`, comment)
     .then(response => {
       dispatch({ type: EDITCOMMENT_SUCCESS, payload: response.data })
+      dispatch(getPostComments(postid))
+      setExpanded2(false)
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
 
-export const deleteComment = (commentid) => dispatch => {
+export const deleteComment = (commentid, postid) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .delete(`/comments/${commentid}`)
     .then(response => {
       dispatch({ type: DELETECOMMENT_SUCCESS, payload: response.data })
+      dispatch(getPostComments(postid))
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
@@ -430,36 +438,42 @@ export const getSpecificPost = (postid, setPost) => dispatch => {
     });
 }
 
-export const createPost = (post) => dispatch => {
+export const createPost = (post, setOpen, userid) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .post(`posts`, post)
     .then(response => {
       dispatch({ type: CREATEPOST_SUCCESS, payload: response.data })
+      setOpen(false)
+      dispatch(getUserPosts(userid));
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
 
-export const editPost = (postid, post) => dispatch => {
+export const editPost = (postid, post, setOpen, userid) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .put(`/posts/${postid}`, post)
     .then(response => {
       dispatch({ type: EDITPOST_SUCCESS, payload: response.data })
+      setOpen(false)
+      dispatch(getUserPosts(userid));
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
 
-export const deletePost = (postid) => dispatch => {
+export const deletePost = (postid, setOpen, userid) => dispatch => {
   dispatch({ type: START_FETCHING });
   axiosWithAuth()
     .delete(`/posts/${postid}`)
     .then(response => {
       dispatch({ type: DELETEPOST_SUCCESS, payload: response.data })
+      setOpen(false)
+      dispatch(getUserPosts(userid));
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });

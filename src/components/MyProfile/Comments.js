@@ -25,7 +25,6 @@ const Comments = (props) => {
   
   const currentUser = useSelector(state => state.user);
   const comments = useSelector(state => state.postComments);
-  // const userid = Number(localStorage.getItem("userid"));
 
   const [expanded2, setExpanded2] = useState(false);
   const [editComment, setEditComment] = useState({});
@@ -45,14 +44,22 @@ const Comments = (props) => {
   };
 
   const handleEditCommentChange = e => {
-    setEditComment({comment:e.target.value})
-    setCommentid(Number(e.target.name))
-    setPostid(Number(postid))
+    setEditComment({comment:e.target.value});
+    setCommentid(Number(e.target.name));
   };
 
   const handleEditCommentSubmit = e => {
     e.preventDefault();
-    props.editComment(commentid, editComment)
+    props.editComment(commentid, editComment, postid, setExpanded2);
+  }
+
+  const editing = (comment) => {
+    setPostid(comment.post_id)
+    expanded2 === `editPanel${comment.comment_id}` ? setExpanded2(false) : setExpanded2(`editPanel${comment.comment_id}`)
+  }
+
+  const deleteComment = (comment) => {
+    props.deleteComment(comment.comment_id, comment.post_id);
   }
 
   const formatDate = (date) => {
@@ -97,12 +104,10 @@ const Comments = (props) => {
                       >
                         <EditIcon
                           onClick={() =>
-                            expanded2 === `editPanel${element.comment_id}`
-                              ? setExpanded2(false)
-                              : setExpanded2(`editPanel${element.comment_id}`)
+                            editing(element)
                           }
                         />
-                        <DeleteIcon onClick={()=>props.deleteComment(element.comment_id)} />
+                        <DeleteIcon onClick={()=>deleteComment(element)} />
                       </div>
                     ) : (
                       false
@@ -125,7 +130,7 @@ const Comments = (props) => {
                       <form onSubmit={handleEditCommentSubmit}>
                         <TextField
                           name={element.comment_id}
-                          placeholder={element.comment}
+                          defaultValue={element.comment}
                           onChange={handleEditCommentChange}
                         />
                         <Button type="submit" variant="contained">

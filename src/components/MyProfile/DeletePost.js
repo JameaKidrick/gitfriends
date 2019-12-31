@@ -44,7 +44,7 @@ const DeletePostModal = (props) => {
   }
 
   const deletePost = () => {
-    props.deletePost(props.postid)
+    props.deletePost(props.postid, setOpen, props.userid)
   }
 
   return (

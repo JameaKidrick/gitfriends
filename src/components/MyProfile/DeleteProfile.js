@@ -47,9 +47,9 @@ const DeleteProfileModal = (props) => {
 
   return (
     <div>
-      <button type="button" onClick={handleOpen}>
+      <Button type="button" variant='contained' onClick={handleOpen}>
         delete profile
-      </button>
+      </Button>
       <Modal
         aria-labelledby="delete-modal-title"
         className={classes.modal}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // COMPONENTS
 import Comments from './Comments';
@@ -43,6 +43,8 @@ const Posts = props => {
   // STYLE
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const currentUser = useSelector(state => state.user);
   const posts = useSelector(state => state.userPosts);
   const error = useSelector(state => state.error);
@@ -55,17 +57,17 @@ const Posts = props => {
   })
 
   useEffect(() => {
-    props.getUser();
+    dispatch(getUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   useEffect(() => {
-    props.getUserPosts(currentUser.userid);
+    dispatch(getUserPosts(currentUser.userid));
   }, [currentUser])
 
   useEffect(() => {
     if(expanded){
-      props.getPostComments(expanded.replace('panel', ''))
+      dispatch(getPostComments(Number(expanded.toString().replace('panel', ''))))
     }
   }, [expanded])
 
@@ -79,9 +81,9 @@ const Posts = props => {
   };
 
   const handleCommentSubmit = e => {
-    e.preventDefault()
-    props.createComment(postid, makeComment)
-    props.getPostComments(postid)
+    e.preventDefault();
+    dispatch(createComment(postid, makeComment, setExpanded))
+    // props.getPostComments(postid)
   };
   
   const formatDate = (date) => {
@@ -99,7 +101,7 @@ const Posts = props => {
 
   return (
     <div className="postsContainer">
-      <NewPost />
+      <NewPost userid={currentUser.userid} />
       {error === 'user has no posts' ? 
         (<Typography variant='h5'>you don't have any posts yet</Typography>)
         :
@@ -116,8 +118,8 @@ const Posts = props => {
               <div style={{display:'flex', justifyContent:'space-between'}}>
                 <CardHeader title={item.title} subheader={`published: ${formatDate(item.created_at)}`} />
                 <div style={{display:'flex', justifyContent:'space-between'}}>
-                  <EditPost postid={item.post_id} />
-                  <DeletePost postid={item.post_id} />
+                  <EditPost postid={item.post_id} userid={currentUser.userid} />
+                  <DeletePost postid={item.post_id} userid={currentUser.userid} />
                 </div>
               </div>
               <CardContent>
@@ -167,6 +169,4 @@ const Posts = props => {
   );
 };
 
-export default connect(null, 
-  { getUserPosts, getPostComments, createComment, getUser }
-)(Posts);
+export default Posts;

@@ -13,6 +13,9 @@ import {
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
+import Grow from "@material-ui/core/Grow";
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import { FormHelperText } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -31,6 +34,7 @@ const EditAvatar = (props) => {
   const [profile, setProfile] = useState([]);
   const [choice, setChoice] = useState();
   const [updateProfile, setUpdateProfile] = useState();
+  const [checkSuccess, setCheckSuccess] = useState(false);
 
   useEffect(() => {
     props.check();
@@ -46,6 +50,7 @@ const EditAvatar = (props) => {
     setUpdateProfile({
       avatar: `${choice}`
     });
+    setCheckSuccess(false);
   }, [choice]);
 
   // SETTING INITIAL SETTINGS
@@ -53,10 +58,11 @@ const EditAvatar = (props) => {
     setChoice(profile.avatar);
   }, [profile, user]);
 
+
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.editProfile(currentUser.profileid, updateProfile, props.history);
+    props.editProfile(currentUser.profileid, updateProfile, setCheckSuccess);
   };
 
   return(
@@ -64,6 +70,10 @@ const EditAvatar = (props) => {
       <form onSubmit={handleSubmit}>
             <div className="chooseAvatar">
               <h2>avatar</h2>
+              {/* {success && ( */}
+                <Grow in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon />update successful!</FormHelperText></Grow>
+
+              {/* )} */}
               <h3>avatar selected:</h3>
               <Avatar src={choice} className={classes.bigAvatar} />
               {/* {console.log('CHOICE', choice)} */}
