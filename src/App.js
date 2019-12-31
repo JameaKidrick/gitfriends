@@ -54,7 +54,6 @@ function App(props) {
         <Link to="/users">Find Friends</Link>
         <br />
         <Link to={`/myprofile/${userid}`}>My Profile</Link>
-        <br />
         {!loggedIn && (
           <>
             <br />

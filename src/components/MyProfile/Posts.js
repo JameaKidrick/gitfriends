@@ -100,7 +100,7 @@ const Posts = props => {
   return (
     <div className="postsContainer">
       <NewPost />
-      {error ? 
+      {error === 'user has no posts' ? 
         (<Typography variant='h5'>you don't have any posts yet</Typography>)
         :
         sortedPosts.map((item, postIndex) => {

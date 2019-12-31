@@ -55,8 +55,6 @@ const NewPostModal = (props) => {
     setOpen(false)
   }
 
-  console.log(post)
-
   return (
     <div>
       <Button type="button" onClick={handleOpen} variant='contained'>

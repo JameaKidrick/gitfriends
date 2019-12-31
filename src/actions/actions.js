@@ -364,6 +364,7 @@ export const getUserPosts = (userid) => dispatch => {
       dispatch({ type: FETCHUSERPOSTS_SUCCESS, payload: response.data })
     })
     .catch(error => {
+      console.log(error.response)
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.message });
     });
 }
