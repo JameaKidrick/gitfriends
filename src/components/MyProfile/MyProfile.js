@@ -42,7 +42,7 @@ const MyProfile = (props) => {
     props.getUserLanguages(currentUser.profileid);
   }, [currentUser])
 
-  console.log('USERLANGUAGES', userLanguages)
+  // console.log('USERLANGUAGES', userLanguages)
 
   return(
     <div className='myProfileContainer'>

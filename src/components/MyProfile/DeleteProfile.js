@@ -24,16 +24,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DeleteProfileModal = (props) => {
-  // const userid = Number(localStorage.getItem('userid'));
   // STYLES
   const classes = useStyles();
 
-  const currentUser = useSelector(state => state.user);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    props.getUser();
-  }, []);
 
   const handleOpen = () => {
     setOpen(true);
@@ -48,7 +42,7 @@ const DeleteProfileModal = (props) => {
   }
 
   const deleteProfile = () => {
-    props.deleteUser(currentUser.userid, props.history)
+    props.deleteUser(props.userid, props.history)
   }
 
   return (

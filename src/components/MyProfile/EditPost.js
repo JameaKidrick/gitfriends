@@ -42,7 +42,6 @@ const EditPostModal = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-
   
   const handlePostChange = e => {
     setEditPost({ ...editPost, [e.target.name]:e.target.value })

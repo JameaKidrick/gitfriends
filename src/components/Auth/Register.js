@@ -127,6 +127,7 @@ const Register = (props) => {
           <KeyboardDatePicker
             disableToolbar
             name='date_of_birth'
+            inputVariant="outlined"
             format="MM/dd/yyyy"
             label='date of birth*'
             defaultValue={credentials.date_of_birth}

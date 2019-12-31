@@ -44,10 +44,11 @@ export const getUser = () => dispatch => {
   axiosWithAuth()
     .get("/users/user")
     .then(response => {
-      console.log(response.data)
+      console.log('GET USER ACTION', response.data)
       dispatch({ type: FETCHUSER_SUCCESS, payload: response.data });
     })
     .catch(error => {
+      console.log(error)
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
     });
 }
@@ -109,8 +110,9 @@ export const loginUser = (credentials, history) => dispatch => {
     .post("/auth/login", credentials)
     .then(response => {
       dispatch({ type: LOGIN_SUCCESS });
+      console.log(response)
       localStorage.setItem('token', response.data.token);
-      history.push("/");
+      history.push(`/myprofile/${response.data.userid}`);
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error.response.data.error });
@@ -213,11 +215,11 @@ export const editProfile = (profileId, info) => dispatch => {
 
 export const getUserLanguages = profileid => dispatch => {
   dispatch({ type: START_FETCHING });
-  console.log(profileid)
+  // console.log(profileid)
   axiosWithAuth()
     .get(`/profiles/${profileid}/fave`)
     .then(response => {
-      console.log('GETUSERLANGUAGES ACTION', response)
+      // console.log('GETUSERLANGUAGES ACTION', response)
       dispatch({ type: FETCHUSERLANGUAGES_SUCCESS, payload: response.data });
     })
     .catch(error => {
@@ -228,6 +230,7 @@ export const getUserLanguages = profileid => dispatch => {
 
 export const editUserLanguages = (profileid, fave, history) => dispatch => {
   dispatch({ type: START_FETCHING });
+  console.log('ACTIONS', fave)
   fave.forEach(element => {
     axiosWithAuth()
       .post(`/profiles/${profileid}/updateFave`, element)
@@ -357,6 +360,7 @@ export const getUserPosts = (userid) => dispatch => {
   axiosWithAuth()
     .get(`/users/${userid}/posts`)
     .then(response => {
+      // console.log(response.data)
       dispatch({ type: FETCHUSERPOSTS_SUCCESS, payload: response.data })
     })
     .catch(error => {
