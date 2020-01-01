@@ -34,12 +34,14 @@ const Users = (props) => {
   const isFetching = useSelector(state => state.isFetching);
   const currentUser = useSelector(state => state.user);
   const profiles = useSelector(state => state.profiles);
+  const queries = useSelector(state => state.queries);
   const friends = useSelector(state => state.friends);
   const requests = useSelector(state => state.requests);
   const userid = currentUser.userid;
   const [query, setQuery] = useState(props.location.search)
-  const [filterObj, setFilterObj] = useState({ sortby:'user id', sortdir:'asc' })
+  const [filterObj, setFilterObj] = useState({})
   const [filtering, setFiltering] = useState(true)
+  const [filteredProfiles, setFilteredProfiles] = useState()
 
   useEffect(() => {
     props.getAllProfilesWithUsers(query);
@@ -48,18 +50,54 @@ const Users = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
+  // `?sortby=${filterObj.sortby}&sortdir=${filterObj.sortdir}&limit=0&page=1`
+
   useEffect(() => {
     props.getUsersFriends(userid);
     props.getFriendRequests(userid);
   }, [currentUser])
 
+  useEffect(() => {
+    setFilteredProfiles(profiles)
+  }, [profiles])
+
+  useEffect(() => {
+    props.getAllProfilesWithUsers(query);
+  }, [query])
+
   const sendFriendRequest = (user) => {
     props.sendFriendRequest(user.user_id, userid);
   };
 
+  const filterFriends = () => {
+    /*
+    function getCount(str) {
+      let vowels = ['a','e','i','o','u'];
+      return str.split('').filter(letter => {
+        return vowels.includes(letter)? true : false;
+      }).length;
+    }
+    function fn(parameter) {
+      let arr1 = []
+      return arr2.filter(item => {
+        return condition
+      })
+    }
+    */
+    // console.log('clicked')
+  };
+
+  const filterPending = () => {
+
+  };
+
   const handleQueryChange = e => {
-    
-  }
+    setFilterObj({...filterObj, [e.target.name]: e.target.value })
+  };
+
+  const handleSubmit = e => {
+    setQuery(`?sortby=${filterObj.sortby}&sortdir=${filterObj.sortdir}`)
+  };
 
   if(isFetching){
     return(
@@ -73,6 +111,7 @@ const Users = (props) => {
 
   return(
     <div>
+      <Button type='button' onClick={()=>filterFriends()}>TEST</Button>
       <TextField 
         fullWidth
         variant='outlined'
@@ -81,26 +120,45 @@ const Users = (props) => {
       />
       <div style={{border:'3px solid green', display:'flex', flexDirection:'row-reverse'}}>
         <div style={{border:'1px solid black', width:'15%'}}>
-          <Typography><FilterListIcon></FilterListIcon>Filter</Typography>
+          <Typography><FilterListIcon></FilterListIcon>Filter & Sort</Typography>
+          <br />
           {filtering && (
-            <div style={{border:'2px solid blue'}}>
+            <form onSubmit={handleSubmit} style={{border:'2px solid blue'}}>
               <Typography>Sort By:</Typography>
-              <RadioGroup aria-label="category" name="category" value={filterObj} onChange={handleQueryChange}>
+              <RadioGroup aria-label="sortby" name="sortby" value={filterObj.sortby ? filterObj.sortby : queries.sortby ? queries.sortby : 'user_id'} onChange={handleQueryChange}>
                 <FormControlLabel
-                name='MonthDOB'
-                value='user id'
+                name='sortby'
+                value='user_id'
                 control={<ColoredRadio />} 
                 label="user id"
                 />
 
                 <FormControlLabel
-                name='PartialDOB'
-                value=''
+                name='sortby'
+                value='username'
                 control={<ColoredRadio />} 
                 label="username"
                 />
               </RadioGroup>
-            </div>
+              <br />
+              <Typography>Sort Direction:</Typography>
+              <RadioGroup aria-label="sortdir" name="sortdir" value={filterObj.sortdir ? filterObj.sortdir : queries.sortdir ? queries.sortdir : 'asc'} onChange={handleQueryChange}>
+                <FormControlLabel
+                name='sortdir'
+                value='asc'
+                control={<ColoredRadio />} 
+                label='ascending'
+                />
+
+                <FormControlLabel
+                name='sortdir'
+                value='desc'
+                control={<ColoredRadio />} 
+                label='descending'
+                />
+              </RadioGroup>
+              <Button type='submit' variant='contained'>filter</Button>
+            </form>
           )}
         </div>
         <div style={{border:'1px solid black', display:'flex', flexWrap:'wrap'}}>

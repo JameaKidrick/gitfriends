@@ -89,7 +89,7 @@ export const getAllProfilesWithUsers = (query, history) => dispatch => {
     .get(`/profiles/all${query}`)
     .then(response => {
       console.log('ACTION', response.data)
-      dispatch({ type: FETCHPROFILES_SUCCESS, payload: response.data });
+      dispatch({ type: FETCHPROFILES_SUCCESS, payload: response.data.profiles, queries: response.data.queries });
       history.push(`/users${query}`)
     })
     .catch(error => {

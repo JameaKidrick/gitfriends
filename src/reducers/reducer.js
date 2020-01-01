@@ -6,6 +6,7 @@ export const initialState = {
   userwithoutprofile: [],
   users: [],
   profiles: [{}],
+  queries: {},
   userProfile:{},
   languages: [],
   userLanguages: [],
@@ -99,6 +100,7 @@ export const reducer = (state = initialState, action) => {
       return {
       ...state,
       profiles: action.payload,
+      queries: action.queries,
       isFetching: false,
       error: '',
       loggedIn: true
