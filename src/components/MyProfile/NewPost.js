@@ -80,6 +80,7 @@ const NewPostModal = (props) => {
             <TextField
               name='title'
               fullWidth
+              autoFocus
               variant='outlined'
               placeholder='title'
               onChange={handlePostChange}

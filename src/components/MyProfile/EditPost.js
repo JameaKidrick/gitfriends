@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -28,13 +28,14 @@ const useStyles = makeStyles(theme => ({
 
 const EditPostModal = (props) => {
   const classes = useStyles();
+
+  const isFetching = useSelector(state => state.isFetching);
   const [open, setOpen] = useState(false);
   const [post, setPost] = useState({});
-  const [editPost, setEditPost] = useState({})
+  const [editPost, setEditPost] = useState({});
 
   useEffect(() => {
     props.getSpecificPost(props.postid, setPost)
-
   }, [open])
 
   const handleOpen = () => {
@@ -57,6 +58,10 @@ const EditPostModal = (props) => {
   const cancelModal = () => {
     setEditPost({})
     setOpen(false)
+  }
+
+  if(isFetching){
+    return <EditIcon></EditIcon>;
   }
 
   return (

@@ -70,6 +70,7 @@ const Register = (props) => {
       <Typography variant='h5'>register</Typography>
       <FormHelperText error>required = *</FormHelperText>
         <TextField 
+          autoFocus
           label='username*'
           name='username'
           variant='outlined'

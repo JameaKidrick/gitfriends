@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, List, Card, CardHeader, ListItem, ListItemText, ListItemIcon, Checkbox, Button, Divider, FormControlLabel } from '@material-ui/core';
+import { Grid, List, Card, CardHeader, ListItem, ListItemText, ListItemIcon, Checkbox, Button, Divider, FormControlLabel, Grow, FormHelperText } from '@material-ui/core';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 // ACTIONS
 import { check, getLanguages, getUserLanguages, getUser, editUserLanguages } from '../../../actions';
@@ -50,6 +51,7 @@ export default function TransferList(props) {
   const [left, setLeft] = React.useState([0, 1, 2, 3]);
   const [right, setRight] = React.useState([4, 5, 6, 7]);
   const [fave, setFave] = useState([]);
+  const [checkSuccess, setCheckSuccess] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -114,28 +116,34 @@ export default function TransferList(props) {
   const handleAllRight = () => {
     setRight(right.concat(left));
     setLeft([]);
+    setCheckSuccess(false);
   };
 
   const handleCheckedRight = () => {
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
+    setCheckSuccess(false);
   };
 
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
+    
+    setCheckSuccess(false);
   };
 
   const handleAllLeft = () => {
     setLeft(left.concat(right));
     setRight([]);
+    
+    setCheckSuccess(false);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(editUserLanguages(currentUser.profileid, fave, props.history));
+    dispatch(editUserLanguages(currentUser.profileid, fave, setCheckSuccess));
   }
 
   const customList = (title, items) => (
@@ -184,6 +192,8 @@ export default function TransferList(props) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <Grow direction="left" in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon /></FormHelperText></Grow>
+      <Grow direction="left" in={checkSuccess} {...(checkSuccess ? { timeout: 1500 } : {})}><FormHelperText style={{color:'limeGreen'}}>update successful!</FormHelperText></Grow>
       <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
         <Grid item>{customList('Choices', left)}</Grid>
         <Grid item>
@@ -231,7 +241,7 @@ export default function TransferList(props) {
           </Grid>
         </Grid>
         <Grid item>{customList('Chosen', right)}</Grid>
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' variant='contained'>Submit</Button>
       </Grid>
     </form>
   );

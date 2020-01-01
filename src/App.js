@@ -29,9 +29,13 @@ function App(props) {
   const [userid, setUserid] = useState(0);
   const currentUser = useSelector(state => state.user);
   const loggedIn = useSelector(state => state.loggedIn);
+  const [search, setSearch] = useState(``)
 
   useEffect(() => {
     props.getUserAfterRegister();
+    if(props.location && props.location.search !== undefined){
+      setSearch(`?${props.location.search}`);
+    }
   }, []);
 
   useEffect(() => {
@@ -88,7 +92,11 @@ function App(props) {
           {/* TEMPORARY - CHANGE TO PRIVATE ROUTE */}
 
           {/**************************** PRIVATE ROUTES ****************************/}
+          {/**************************** QUERIES ****************************/}
           <PrivateRoute path="/users" component={Users} />
+          <PrivateRoute path={`/users${search}`} component={Users} />
+
+          {/**************************** QUERIES ****************************/}
           <PrivateRoute
             exact
             path="/register/:id/createprofile"

@@ -6,10 +6,11 @@ import { Link } from 'react-router-dom';
 import { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest, getUser } from '../../actions';
 
 // STYLE
-import Avatar from '@material-ui/core/Avatar';
+import { Typography, Avatar } from '@material-ui/core';
 
 const FriendRequests = (props) => {
   const currentUser = useSelector(state => state.user);
+  const error = useSelector(state => state.error);
   const requests = useSelector(state => state.requests);
   const userid = currentUser.userid;
 
@@ -19,7 +20,7 @@ const FriendRequests = (props) => {
   }, [])
   
   useEffect(() => {
-    props.getFriendRequests(currentUser.userid);
+    props.getFriendRequests(userid);
   }, [currentUser])
 
   const acceptRequest = (requestid) => {
@@ -33,55 +34,59 @@ const FriendRequests = (props) => {
   return (
     <div className='friendRequestsContainer'>
       Hey Friends!
-      {requests.map((item, index) => {
-        if(userid === item.requestor_id){
-          if(userid === item.user1_id){
-            return(
-              <div key={index}>
-                <p>REQUEST ID: {item.request_id}</p>
-                <p>USERNAME: {item.user2_username}</p>
-                <Avatar src={item.user2_avatar} />
-                <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
-                <button onClick={()=>props.deleteFriendRequest(item.request_id)}>cancel request</button>
-              </div>
-            )
-          }else if(userid === item.user2_id){
-            return(
-              <div key={index}>
-                <p>REQUEST ID: {item.request_id}</p>
-                <p>USERNAME: {item.user1_username}</p>
-                <Avatar src={item.user1_avatar} />
-                <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
-                <button onClick={()=>props.deleteFriendRequest(item.request_id)}>cancel request</button>
-              </div>
-            )
+      {(error && error === 'No new requests') ? 
+      <Typography>no new requests</Typography>
+      :
+      (requests.map((item, index) => {
+          if(userid === item.requestor_id){
+            if(userid === item.user1_id){
+              return(
+                <div key={index}>
+                  <p>REQUEST ID: {item.request_id}</p>
+                  <p>USERNAME: {item.user2_username}</p>
+                  <Avatar src={item.user2_avatar} />
+                  <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
+                  <button onClick={()=>props.deleteFriendRequest(item.request_id, userid)}>cancel request</button>
+                </div>
+              )
+            }else if(userid === item.user2_id){
+              return(
+                <div key={index}>
+                  <p>REQUEST ID: {item.request_id}</p>
+                  <p>USERNAME: {item.user1_username}</p>
+                  <Avatar src={item.user1_avatar} />
+                  <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
+                  <button onClick={()=>props.deleteFriendRequest(item.request_id, userid)}>cancel request</button>
+                </div>
+              )
+            }
+          }else if(userid !== item.requestor_id){
+            if(userid === item.user1_id){
+              return(
+                <div key={index}>
+                  <p>REQUEST ID: {item.request_id}</p>
+                  <p>USERNAME: {item.user2_username}</p>
+                  <Avatar src={item.user2_avatar} />
+                  <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
+                  <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
+                  <button onClick={()=>denyRequest(item.request_id)}>decline</button>
+                </div>
+              )
+            }else if(userid === item.user2_id){
+              return(
+                <div key={index}>
+                  <p>REQUEST ID: {item.request_id}</p>
+                  <p>USERNAME: {item.user1_username}</p>
+                  <Avatar src={item.user1_avatar} />
+                  <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
+                  <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
+                  <button onClick={()=>denyRequest(item.request_id)}>decline</button>
+                </div>
+              )
+            }
           }
-        }else if(userid !== item.requestor_id){
-          if(userid === item.user1_id){
-            return(
-              <div key={index}>
-                <p>REQUEST ID: {item.request_id}</p>
-                <p>USERNAME: {item.user2_username}</p>
-                <Avatar src={item.user2_avatar} />
-                <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
-                <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
-                <button onClick={()=>denyRequest(item.request_id)}>decline</button>
-              </div>
-            )
-          }else if(userid === item.user2_id){
-            return(
-              <div key={index}>
-                <p>REQUEST ID: {item.request_id}</p>
-                <p>USERNAME: {item.user1_username}</p>
-                <Avatar src={item.user1_avatar} />
-                <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
-                <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
-                <button onClick={()=>denyRequest(item.request_id)}>decline</button>
-              </div>
-            )
-          }
-        }
-      })}
+        })
+      )}
     </div>
   )
 }

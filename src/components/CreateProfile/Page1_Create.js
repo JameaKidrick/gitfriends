@@ -7,7 +7,7 @@ import { connect, useSelector } from 'react-redux';
 import { createProfile, check, getUserAfterRegister } from '../../actions';
 
 // STYLES
-import { TextField,FormControlLabel, Radio, RadioGroup, withStyles, Avatar, makeStyles, FormHelperText } from '@material-ui/core';
+import { TextField, FormControlLabel, Radio, RadioGroup, withStyles, Avatar, makeStyles, FormHelperText } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { css } from '@emotion/core';
 import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';

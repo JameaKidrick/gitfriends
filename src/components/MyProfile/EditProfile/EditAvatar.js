@@ -12,10 +12,8 @@ import {
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
-import Grow from "@material-ui/core/Grow";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import { FormHelperText } from "@material-ui/core";
+import { FormHelperText, Button, Grow, Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -68,39 +66,36 @@ const EditAvatar = (props) => {
   return(
     <div className='editAvatarContainer'>
       <form onSubmit={handleSubmit}>
-            <div className="chooseAvatar">
-              <h2>avatar</h2>
-              {/* {success && ( */}
-                <Grow in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon />update successful!</FormHelperText></Grow>
-
-              {/* )} */}
-              <h3>avatar selected:</h3>
-              <Avatar src={choice} className={classes.bigAvatar} />
-              {/* {console.log('CHOICE', choice)} */}
-              <h3>choose an avatar:</h3>
-              <div
-                style={{
-                  border: "2px solid red",
-                  display: "flex",
-                  flexWrap: "wrap",
-                  width: "25%"
-                }}
-              >
-                {avatarList.map((pic, index) => {
-                  return (
-                    <div key={index}>
-                      <Avatar
-                        className={classes.bigAvatar}
-                        src={pic}
-                        onClick={() => setChoice(pic)}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <button type="submit">Submit</button>
-        </form>
+        <div className="chooseAvatar">
+          <h2>avatar</h2>
+          <Grow direction="left" in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon /></FormHelperText></Grow>
+          <Grow direction="left" in={checkSuccess} {...(checkSuccess ? { timeout: 1000 } : {})}><FormHelperText style={{color:'limeGreen'}}>update successful!</FormHelperText></Grow>
+          <h3>avatar selected:</h3>
+          <Avatar src={choice} className={classes.bigAvatar} />
+          <h3>choose an avatar:</h3>
+          <div
+            style={{
+              border: "2px solid red",
+              display: "flex",
+              flexWrap: "wrap",
+              width: "25%"
+            }}
+          >
+            {avatarList.map((pic, index) => {
+              return (
+                <div key={index}>
+                  <Avatar
+                    className={classes.bigAvatar}
+                    src={pic}
+                    onClick={() => setChoice(pic)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <Button type="submit" variant='contained'>Submit</Button>
+      </form>
     </div>
   )
 }

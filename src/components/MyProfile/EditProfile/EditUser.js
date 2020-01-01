@@ -6,9 +6,8 @@ import useForm from "react-hook-form";
 import { editUser, getUser }from '../../../actions';
 
 // STYLE
-import { TextField } from '@material-ui/core';
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Button from '@material-ui/core/Button';
+import { TextField, FormHelperText, Button, Grow } from '@material-ui/core';
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 const EditUser = (props) => {
   let { register, handleSubmit, errors, clearError} = useForm();
@@ -23,6 +22,7 @@ const EditUser = (props) => {
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
   const [email, setEmail] = useState();
+  const [checkSuccess, setCheckSuccess] = useState();
 
   useEffect(() => {
     props.getUser();
@@ -49,26 +49,32 @@ const EditUser = (props) => {
 
   const handleUsernameChange = e => {
     setUsername(e.target.value)
+    setCheckSuccess(false)
   }
 
   const handlePasswordChange = e => {
     setPassword(e.target.value)
+    setCheckSuccess(false)
   }
 
   const handleConfirmPasswordChange = e => {
     setConfirmPassword(e.target.value)
+    setCheckSuccess(false)
   }
 
   const handleFirstChange = e => {
     setFirst(e.target.value)
+    setCheckSuccess(false)
   }
 
   const handleLastChange = e => {
     setLast(e.target.value)
+    setCheckSuccess(false)
   }
 
   const handleEmailChange = e => {
     setEmail(e.target.value)
+    setCheckSuccess(false)
   }
 
   const handleFormSubmit = (data, e)=> {
@@ -76,22 +82,14 @@ const EditUser = (props) => {
     // e.persist()
     // validateForm()
     // props.registerUser(data, props.history)
-    props.editUser(currentUser.userid, user, props.history)
-  }
-
-  if(isFetching){
-    return(
-      <div>
-        <h2>
-          Loading...
-        </h2>
-      </div>
-    )
+    props.editUser(currentUser.userid, user, setCheckSuccess)
   }
 
   return(
     <div className='editUserContainer'>
       Hello EditUser Page!
+      <Grow direction="left" in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon /></FormHelperText></Grow>
+      <Grow direction="left" in={checkSuccess} {...(checkSuccess ? { timeout: 1500 } : {})}><FormHelperText style={{color:'limeGreen'}}>update successful!</FormHelperText></Grow>
       <form onSubmit={handleSubmit(handleFormSubmit)} style={{display:'flex', flexDirection:'column'}}>
         <TextField
           label='username'
@@ -135,7 +133,7 @@ const EditUser = (props) => {
           variant='outlined'
           onChange={handleEmailChange}
         />
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' variant='contained'>Submit</Button>
       </form>
     </div>
   )

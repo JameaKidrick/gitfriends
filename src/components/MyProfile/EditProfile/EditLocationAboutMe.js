@@ -5,7 +5,8 @@ import { connect, useSelector } from 'react-redux';
 import { getUserProfile, check, editProfile, getUser } from '../../../actions';
 
 // STYLES
-import { TextField } from '@material-ui/core';
+import { TextField, Grow, FormHelperText, Button } from '@material-ui/core';
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 const EditLocationAndAboutMe = (props) => {
   const currentUser = useSelector(state => state.user);
@@ -14,6 +15,7 @@ const EditLocationAndAboutMe = (props) => {
   const [location, setLocation] = useState('');
   const [aboutMe, setAboutMe] = useState('');
   const [updateProfile, setUpdateProfile] = useState();
+  const [checkSuccess, setCheckSuccess] = useState();
 
   useEffect(() => {
     props.check();
@@ -38,23 +40,27 @@ const EditLocationAndAboutMe = (props) => {
   // HANDLE LOCATION
   const handleLocationChange = e => {
     setLocation(e.target.value)
+    setCheckSuccess(false)
   }
 
   // HANDLE ABOUT ME
   const handleAboutMeChange = e => {
     setAboutMe(e.target.value)
+    setCheckSuccess(false)
   }
   
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.editProfile(currentUser.profileid, updateProfile, props.history);
+    props.editProfile(currentUser.profileid, updateProfile, setCheckSuccess);
   }
 
   return(
     <div className='editLocationAndAboutMeContainer'>
       <form onSubmit={handleSubmit}>
         <h2>location</h2>
+        <Grow direction="left" in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon /></FormHelperText></Grow>
+        <Grow direction="left" in={checkSuccess} {...(checkSuccess ? { timeout: 1500 } : {})}><FormHelperText style={{color:'limeGreen'}}>update successful!</FormHelperText></Grow>
         <TextField
           label='location'
           variant='outlined'
@@ -69,7 +75,7 @@ const EditLocationAndAboutMe = (props) => {
           onChange={handleAboutMeChange}
           value={aboutMe}
         />
-        <button type='submit'>Submit</button>
+        <Button type='submit' variant='contained'>Submit</Button>
       </form>
     </div>
   )

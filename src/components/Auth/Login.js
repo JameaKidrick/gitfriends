@@ -52,6 +52,7 @@ const Login = (props) => {
       <br />
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <TextField
+          autoFocus
           type='text'
           name='username'
           label='username'
