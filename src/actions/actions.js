@@ -82,7 +82,7 @@ export const getAllUsers = () => dispatch => {
     });
 };
 
-export const getAllProfilesWithUsers = (query, history) => dispatch => {
+export const getAllProfilesWithUsers = (query, history, setTotalPages) => dispatch => {
   dispatch({ type: START_FETCHING });
   console.log(query)
   axiosWithAuth()
@@ -90,6 +90,7 @@ export const getAllProfilesWithUsers = (query, history) => dispatch => {
     .then(response => {
       console.log('ACTION', response.data)
       dispatch({ type: FETCHPROFILES_SUCCESS, payload: response.data.profiles, queries: response.data.queries });
+      setTotalPages(response.data.pages)
       history.push(`/users${query}`)
     })
     .catch(error => {
@@ -292,6 +293,7 @@ export const getFriendRequests = userid => dispatch => {
   axiosWithAuth()
     .get(`/users/${userid}/requests`)
     .then(response => {
+      console.log(response)
       dispatch({ type: FETCHFRIENDREQUESTS_SUCCESS, payload: response.data });
     })
     .catch(error => {
@@ -309,6 +311,7 @@ export const respondToFriendRequest = (
     .put(`/users/${userid}/requests/${requestid}`, decision)
     .then(response => {
       dispatch({ type: RESPONDTOREQUEST_SUCCESS });
+      dispatch(getFriendRequests(userid));
     })
     .catch(error => {
       dispatch({ type: FETCH_FAILURE, payload: error });
