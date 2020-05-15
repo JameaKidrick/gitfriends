@@ -20,16 +20,27 @@ import FriendRequests from "./components/MyProfile/FriendRequests";
 import FriendsList from './components/MyProfile/Friends';
 
 // ACTIONS
-import { logoutUser } from "./actions";
+import { logoutUser, getUserAfterRegister } from "./actions";
+
+// STYLES
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 
 function App(props) {
   const [userid, setUserid] = useState(0);
+  const currentUser = useSelector(state => state.user);
   const loggedIn = useSelector(state => state.loggedIn);
-  // console.log(userid, typeof(userid))
+  const [search, setSearch] = useState(``)
 
   useEffect(() => {
-    setUserid(Number(localStorage.getItem("userid")));
+    props.getUserAfterRegister();
+    if(props.location && props.location.search !== undefined){
+      setSearch(`?${props.location.search}`);
+    }
   }, []);
+
+  useEffect(() => {
+    setUserid(currentUser.userid);
+  }, [currentUser]);
 
   const logOut = () => {
     props.logoutUser();
@@ -81,7 +92,11 @@ function App(props) {
           {/* TEMPORARY - CHANGE TO PRIVATE ROUTE */}
 
           {/**************************** PRIVATE ROUTES ****************************/}
+          {/**************************** QUERIES ****************************/}
           <PrivateRoute path="/users" component={Users} />
+          <PrivateRoute path={`/users${search}`} component={Users} />
+
+          {/**************************** QUERIES ****************************/}
           <PrivateRoute
             exact
             path="/register/:id/createprofile"
@@ -136,4 +151,4 @@ function App(props) {
   );
 }
 
-export default connect(null, { logoutUser })(App);
+export default connect(null, { logoutUser, getUserAfterRegister })(App);

@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
 
 // ACTIONS
-import { deleteUser, getUser } from '../../actions';
+import { deletePost } from '../../actions';
+
+// STYLES
+import { TextField, Button, FormLabel } from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -23,10 +26,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DeleteProfileModal = (props) => {
-  // STYLES
+const DeletePostModal = (props) => {
+  const userid = Number(localStorage.getItem('userid'));
   const classes = useStyles();
-
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -41,15 +43,15 @@ const DeleteProfileModal = (props) => {
     setOpen(false)
   }
 
-  const deleteProfile = () => {
-    props.deleteUser(props.userid, props.history)
+  const deletePost = () => {
+    props.deletePost(props.postid, setOpen, props.userid)
   }
 
   return (
     <div>
-      <Button type="button" variant='contained' onClick={handleOpen}>
-        delete profile
-      </Button>
+      <DeleteIcon type="button" onClick={handleOpen} variant='contained'>
+        create a new post
+      </DeleteIcon>
       <Modal
         aria-labelledby="delete-modal-title"
         className={classes.modal}
@@ -63,10 +65,9 @@ const DeleteProfileModal = (props) => {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2>are you sure you want to delete your profile?</h2>
-            <p>you will not be able to undo this and your friends will miss you... a lot...</p>
-            <Button onClick={()=>deleteProfile()}>yes, delete</Button>
-            <Button onClick={()=>cancelModal()}>no, i'll stay</Button>
+            <h2>are you sure you want to delete this post?</h2>
+            <Button type='button' variant='contained' onClick={()=>deletePost()}>delete post</Button>
+            <Button type='button' variant='contained' onClick={()=>cancelModal()}>cancel</Button>
           </div>
         </Fade>
       </Modal>
@@ -76,5 +77,5 @@ const DeleteProfileModal = (props) => {
 
 export default connect(
   null,
-  { deleteUser, getUser }
-)(DeleteProfileModal);
+  { deletePost }
+)(DeletePostModal);

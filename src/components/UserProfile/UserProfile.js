@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux'; 
 
-// STYLE
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+// COMPONENTS
+import UserPosts from './UserPosts';
 
 // ACTIONS
 import { getUserProfile, check } from '../../actions';
+
+// STYLE
+import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -19,11 +22,13 @@ const UserProfile = (props) => {
   // STYLES
   const classes = useStyles();
 
+  const userid = props.match.params.id;
+
   const [profile, setProfile] = useState([])
   const [user, setUser] = useState([])
 
   useEffect(() => {
-    props.getUserProfile(props.match.params.id, setProfile, setUser);
+    props.getUserProfile(userid, setProfile, setUser);
     props.check();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -40,6 +45,7 @@ const UserProfile = (props) => {
       {profile.about_me && (
         <h3>about me: {profile.about_me}</h3>
       )}
+      <UserPosts userid={userid} />
     </div>
   )
 }

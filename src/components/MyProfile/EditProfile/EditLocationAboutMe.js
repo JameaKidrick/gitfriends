@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 // ACTIONS
-import { getUserProfile, check, editProfile, } from '../../../actions';
+import { getUserProfile, check, editProfile, getUser } from '../../../actions';
 
 // STYLES
-import { TextField } from '@material-ui/core';
+import { TextField, Grow, FormHelperText, Button } from '@material-ui/core';
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 const EditLocationAndAboutMe = (props) => {
-  const userid = localStorage.getItem("userid");
-  const profileid = localStorage.getItem("profileid");
+  const currentUser = useSelector(state => state.user);
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState([]);
   const [location, setLocation] = useState('');
   const [aboutMe, setAboutMe] = useState('');
   const [updateProfile, setUpdateProfile] = useState();
+  const [checkSuccess, setCheckSuccess] = useState();
 
   useEffect(() => {
-    props.getUserProfile(userid, setProfile, setUser);
     props.check();
+    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    props.getUserProfile(currentUser.userid, setProfile, setUser);
+  }, [currentUser])
 
   useEffect(() => {
     setUpdateProfile({location:`${location}`, about_me:`${aboutMe}`})
@@ -35,23 +40,27 @@ const EditLocationAndAboutMe = (props) => {
   // HANDLE LOCATION
   const handleLocationChange = e => {
     setLocation(e.target.value)
+    setCheckSuccess(false)
   }
 
   // HANDLE ABOUT ME
   const handleAboutMeChange = e => {
     setAboutMe(e.target.value)
+    setCheckSuccess(false)
   }
   
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.editProfile(profileid, updateProfile, props.history);
+    props.editProfile(currentUser.profileid, updateProfile, setCheckSuccess);
   }
 
   return(
     <div className='editLocationAndAboutMeContainer'>
       <form onSubmit={handleSubmit}>
         <h2>location</h2>
+        <Grow direction="left" in={checkSuccess}><FormHelperText style={{color:'limeGreen'}}><CheckBoxIcon /></FormHelperText></Grow>
+        <Grow direction="left" in={checkSuccess} {...(checkSuccess ? { timeout: 1500 } : {})}><FormHelperText style={{color:'limeGreen'}}>update successful!</FormHelperText></Grow>
         <TextField
           label='location'
           variant='outlined'
@@ -66,7 +75,7 @@ const EditLocationAndAboutMe = (props) => {
           onChange={handleAboutMeChange}
           value={aboutMe}
         />
-        <button type='submit'>Submit</button>
+        <Button type='submit' variant='contained'>Submit</Button>
       </form>
     </div>
   )
@@ -76,4 +85,5 @@ export default connect(null, {
   getUserProfile,
   check,
   editProfile,
+  getUser
 })(EditLocationAndAboutMe);

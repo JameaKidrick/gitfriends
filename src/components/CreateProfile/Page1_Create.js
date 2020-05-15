@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { avatarList } from './AvatarList';
 import Calendar from 'react-calendar';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 // ACTIONS  
-import { createProfile, check } from '../../actions';
+import { createProfile, check, getUserAfterRegister } from '../../actions';
 
 // STYLES
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import { withStyles } from '@material-ui/core/styles';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { TextField, FormControlLabel, Radio, RadioGroup, withStyles, Avatar, makeStyles, FormHelperText } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { TextField } from '@material-ui/core';
+import { css } from '@emotion/core';
+import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -33,13 +29,21 @@ const ColoredRadio = withStyles({
   checked: {},
 })(props => <Radio color="default" {...props} />);
 
+const override = css`
+  display: block;
+  margin: 20% auto;
+  border-color: red;
+`;
+
 const CreateProfile = (props) => {
 
   // STYLES
   const classes = useStyles();
 
   // FORM CODE
-  const user = localStorage.getItem('userid')
+  const currentUser = useSelector(state => state.userwithoutprofile);
+  const isFetching = useSelector(state => state.isFetching);
+  const error = useSelector(state => state.error);
   const [choice, setChoice] = useState('')
   const [DOB, setDOB] = useState(new Date());
   const [DOBFormat, setDOBFormat] = useState('');
@@ -48,19 +52,21 @@ const CreateProfile = (props) => {
   const [aboutMe, setAboutMe] = useState('');
   const [profile, setProfile] = useState({avatar:'', dob_display:''});
 
+  
   useEffect(() => {
-    props.check()
+    props.check();
+    props.getUserAfterRegister();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
+    setDOB(new Date(currentUser.dob))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
+  
+  useEffect(() => {
     setProfile({avatar:`${choice}`, dob_display:`${DOBFormat}`, dobFormat:`${format}`, location:`${location}`, about_me:`${aboutMe}`})
   }, [choice, DOBFormat, format, location, aboutMe])
-
-  // // YUP VALIDATION
-  // let schema = yup.object().shape({
-
-  // })
 
   // FORMAT DOB
   const monthNames = [
@@ -76,25 +82,19 @@ const CreateProfile = (props) => {
     const year = date.getFullYear();
     return `${monthNames[monthIndex]} ${day} ${year}`
   }
-
+  
   function formatPartialDate(date) {
     const monthIndex = date.getMonth();
     const year = date.getFullYear();
     return `${monthNames[monthIndex]} ${year}`
   }
-
+  
   function formatMonthDate(date) {
     const monthIndex = date.getMonth();
     return `${monthNames[monthIndex]}`
   }
-
-  // HANDLE DOB
-  const handleDOBChange = date => {
-    setDOB(date)
-  }
   
   const handleDOBDisplay = e => {
-    console.log(e.target.name)
     setDOBFormat(e.target.value)
     if(e.target.name === 'NoDOB'){
       setFormat('')
@@ -120,7 +120,15 @@ const CreateProfile = (props) => {
   // HANDLE SUBMIT
   const handleSubmit = e => {
     e.preventDefault();
-    props.createProfile(user, profile, props.history);
+    props.createProfile(currentUser.userid, profile, props.history);
+  }
+
+  if(isFetching){
+    return(
+      <ClimbingBoxLoader 
+        css={override}
+      />
+    )
   }
 
   return(
@@ -129,6 +137,10 @@ const CreateProfile = (props) => {
       {/********************************************** CHOOSE AVATAR **********************************************/}
       <div className='chooseAvatar'>
         <h3>avatar selected:</h3>
+        <FormHelperText error>required</FormHelperText>
+        {error && error === 'Please choose an avatar' && (
+          <FormHelperText error>please choose an avatar</FormHelperText>
+        )}
         <Avatar src={choice} className={classes.bigAvatar} />
         <h3>choose an avatar:</h3>
         <div style={{border:'2px solid red', display:'flex', flexWrap:'wrap', width:'25%'}}>
@@ -155,7 +167,7 @@ const CreateProfile = (props) => {
           }}
         />
 
-        <Calendar onChange={date => handleDOBChange(date)} calendarType='US' />
+        {/* <Calendar onChange={date => handleDOBChange(date)} calendarType='US' /> */}
 
         <RadioGroup aria-label="category" name="category" value={DOBFormat} onChange={handleDOBDisplay}>
           <FormControlLabel
@@ -207,5 +219,5 @@ const CreateProfile = (props) => {
 
 export default connect(
   null,
-  { createProfile, check }
+  { createProfile, check, getUserAfterRegister }
 )(CreateProfile);

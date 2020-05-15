@@ -3,21 +3,26 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // ACTIONS
-import { getFriendRequests, check, respondToFriendRequest } from '../../actions';
+import { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest, getUser } from '../../actions';
 
 // STYLE
-import Avatar from '@material-ui/core/Avatar';
+import { Typography, Avatar, Divider } from '@material-ui/core';
 
 const FriendRequests = (props) => {
-  const userid = Number(localStorage.getItem('userid'));
+  const currentUser = useSelector(state => state.user);
+  const error = useSelector(state => state.error);
   const requests = useSelector(state => state.requests);
-  // const [request, setRequest] = useState([])
-  useEffect(() => {
-    props.getFriendRequests(userid)
-    props.check()
-  }, [])
+  const userid = currentUser.userid;
 
-  console.log(requests)
+  useEffect(() => {
+    props.check();
+    props.getUser();
+  }, [])
+  
+  useEffect(() => {
+    props.getFriendRequests(userid);
+  }, [currentUser])
+
   const acceptRequest = (requestid) => {
     props.respondToFriendRequest(userid, requestid, {request_status: 2})
   }
@@ -25,40 +30,64 @@ const FriendRequests = (props) => {
   const denyRequest = (requestid) => {
     props.respondToFriendRequest(userid, requestid, {request_status: 3})
   }
+  /*
+  (error && error === 'No new requests') ? 
+      <Typography>no new requests</Typography>
+      :
+  */
 
   return (
     <div className='friendRequestsContainer'>
-      Hey Friends!
-      {requests.map(item => {
-        if(userid === item.user1_id){
+      <br />
+      <Typography variant='h4' style={{fontWeight:'bold'}}>Friend Requests</Typography>
+      <br />
+      <Typography variant='h6'>your sent friend requests</Typography>
+      {(error && error === 'No new requests') ? 
+      <Typography>no sent requests</Typography>
+      :
+      (requests.map((item, index) => {
+          if(userid === item.requestor_id){
+            return(
+              <div key={index}>
+                <p>REQUEST ID: {item.request_id}</p>
+                <p>USERNAME: {item.friend_username}</p>
+                <Avatar src={item.friend_avatar} />
+                <Link to={`/profile/${item.friendid}`}><button>see profile</button></Link>
+                <button onClick={()=>props.deleteFriendRequest(item.request_id, userid)}>cancel request</button>
+              </div>
+            )
+          }else{
+            return <Typography>no sent requests</Typography>
+          }
+        }))}
+      <br />
+      <Divider/>
+      <br />
+      <Typography variant='h6'>respond to your friend requests</Typography>
+      {(error && error === 'No new requests') ? 
+      <Typography>no new requests</Typography>
+      :
+      (requests.map((item, index) => {
+        if(userid !== item.requestor_id){
           return(
-            <>
+            <div key={index}>
               <p>REQUEST ID: {item.request_id}</p>
-              <p>USERNAME: {item.user2_username}</p>
-              <Avatar src={item.user2_avatar} />
-              <Link to={`/profile/${item.user2_id}`}><button>see profile</button></Link>
+              <p>USERNAME: {item.friend_username}</p>
+              <Avatar src={item.friend_avatar} />
+              <Link to={`/profile/${item.friendid}`}><button>see profile</button></Link>
               <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
               <button onClick={()=>denyRequest(item.request_id)}>decline</button>
-            </>
+            </div>
           )
-        }else if(userid === item.user2_id){
-          return(
-            <>
-              <p>REQUEST ID: {item.request_id}</p>
-              <p>USERNAME: {item.user1_username}</p>
-              <Avatar src={item.user1_avatar} />
-              <Link to={`/profile/${item.user1_id}`}><button>see profile</button></Link>
-              <button onClick={()=>acceptRequest(item.request_id)}>accept</button>
-              <button onClick={()=>denyRequest(item.request_id)}>decline</button>
-            </>
-          )
+        }else{
+          return <Typography>no new requests</Typography>
         }
-      })}
+      }))}
     </div>
   )
 }
 
 export default connect(
   null,
-  { getFriendRequests, check, respondToFriendRequest }
+  { getFriendRequests, check, respondToFriendRequest, deleteFriendRequest, getUser }
 )(FriendRequests);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // ACTIONS
-import { getLanguages, addFaveLanguages, check, getUser } from '../../actions';
+import { getLanguages, getUserLanguages, editUserLanguages, check, getUser } from '../../../actions';
 
 // STYLES
 import Favorite from '@material-ui/icons/Favorite';
@@ -11,43 +11,45 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Typography, FormHelperText } from '@material-ui/core';
-import { css } from '@emotion/core';
-import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';
-
-const override = css`
-  display: block;
-  margin: 20% auto;
-  border-color: red;
-`;
 
 const FaveLanguage = (props) => {
   const currentUser = useSelector(state => state.user);
-  const isFetching = useSelector(state => state.isFetching);
-  // const error = useSelector(state => state.error);
   const languages = useSelector(state => state.languages);
+  const userLanguages = useSelector(state => state.userLanguages);
 
-  const profileid = currentUser.profileid;
   const [likes, setLikes] = useState([]);
-  const [error, setError] = useState(false);
-  const [dislikes, setDislikes] = useState(useSelector(state => state.languages));
+  const [dislikes, setDislikes] = useState([]);
+  const [dislikes2, setDislikes2] = useState([]);
   const [fave, setFave] = useState([]);
 
   useEffect(() => {
     props.getLanguages();
     props.check();
-    props.getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    setDislikes(languages)
-  }, [languages])
+    props.getUserLanguages(currentUser.profileid);
+  }, [currentUser])
 
   useEffect(() => {
+    setLikes(userLanguages)
+    setDislikes(languages)
+  }, [languages, userLanguages])
+
+  useEffect(() => {
+    const fullArray = languages.length+1
     likes.map(item => {
-      setFave([...fave, {language_id:item.language_id}])
+      return dislikes.splice(item.language_id-(fullArray-dislikes.length), 1)
     })
+    setDislikes2(dislikes)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [likes])
+
+  useEffect(() => {
+    setFave(likes.map(item => {
+      return {language_id:item.language_id}
+    }))
   }, [likes])
 
   const addLanguage = value => {
@@ -74,28 +76,12 @@ const FaveLanguage = (props) => {
   
   const handleSubmit = e => {
     e.preventDefault();
-    if(!fave[0]){
-      setError(true)
-    }else{
-      props.addFaveLanguages(profileid, fave, props.history)
-    }
-  }
-
-  if(isFetching){
-    return(
-      <ClimbingBoxLoader 
-        css={override}
-      />
-    )
+    props.editUserLanguages(currentUser.profileid, fave, props.history);
   }
 
   return(
-    <div>
-      <form onSubmit={handleSubmit} style={{display:'flex', justifyContent: 'space-between', width:'100%'}}>
-        <Typography>fave languages</Typography>
-        {error && (
-          <FormHelperText error>please choose at least one language</FormHelperText>
-        )}
+    <form onSubmit={handleSubmit}>
+      <div style={{display:'flex', justifyContent: 'center', width:'100%'}}>
         {!dislikes[0] ?
           <div style={{width:'40%', border:'2px solid blue', textAlign:'center'}}>
             <h2>genius alert!</h2>
@@ -133,12 +119,12 @@ const FaveLanguage = (props) => {
         </List>
         }
         <button type='submit'>Submit</button>
-      </form>
-    </div>
+      </div>
+    </form>
   )
 }
 
 export default connect(
   null,
-  { getLanguages, addFaveLanguages, check, getUser }
+  { getLanguages, getUserLanguages, editUserLanguages, check, getUser }
 )(FaveLanguage);
